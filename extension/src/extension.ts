@@ -16,6 +16,25 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(axess_ai_chat_participant);
 }
 
+// Function to detect intent from user query
+function detectIntent(query: string): { command: string; content: string } {
+    query = query.toLowerCase().trim();
+
+    // Check for URL pattern to detect scan intent
+    const urlPattern = /https?:\/\/[^\s]+/;
+    if (urlPattern.test(query)) {
+        return { command: "scan", content: query.match(urlPattern)![0] };
+    }
+
+    // Check for fix intent - typically mentions issue numbers or fixing something
+    if (query.match(/fix|issue|problem|error|violation|#\d+|\b\d+\b/)) {
+        return { command: "fix", content: query };
+    }
+
+    // Default to explain for all other queries
+    return { command: "explain", content: query };
+}
+
 // Handle chat requests
 const handler: vscode.ChatRequestHandler = async (
     request: vscode.ChatRequest,
@@ -35,27 +54,30 @@ const handler: vscode.ChatRequestHandler = async (
     const apiUrl = extensionContext.globalState.get<string>("apiUrl", "");
     const apiKey = extensionContext.globalState.get<string>("apiKey", "");
 
-    switch (request.command) {
+    // Detect intent from user query
+    const { command, content } = detectIntent(userQuery);
+
+    switch (command) {
         case "scan":
-            if (request.prompt === "") {
-                stream.markdown("⚠️ Please specify a URL to scan. Example: `/scan https://example.com`");
+            if (!content) {
+                stream.markdown("⚠️ Please provide a valid URL to scan. Example: `https://example.com`");
                 return;
             }
 
             // Validate URL format
             try {
-                new URL(request.prompt);
+                new URL(content);
             } catch (e) {
                 stream.markdown("⚠️ Invalid URL format. Please provide a valid URL including the protocol (http:// or https://)");
                 return;
             }
 
             // Show scanning message
-            stream.markdown(`🔍 Scanning ${request.prompt} for accessibility issues...`);
+            stream.markdown(`🔍 Scanning ${content} for accessibility issues...`);
 
             try {
                 // Perform scan and store complete response
-                const scanResponse = await performAccessibilityScan(apiUrl, apiKey, request.prompt);
+                const scanResponse = await performAccessibilityScan(apiUrl, apiKey, content);
 
                 // Extract and store detailed results
                 detailedScanResults = extractDetailedScanResults(scanResponse);
@@ -76,7 +98,9 @@ const handler: vscode.ChatRequestHandler = async (
                     })
                     .join("\n\n");
 
-                stream.markdown(`\n# Accessibility Scan Results\n\n${formattedResults}\n\n> To fix an issue, use \`/fix <issue number>\``);
+                stream.markdown(
+                    `\n# Accessibility Scan Results\n\n${formattedResults}\n\n> To fix an issue, mention the issue number or describe the problem you want to fix.`
+                );
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : "unknown error";
                 stream.markdown(
@@ -87,12 +111,16 @@ const handler: vscode.ChatRequestHandler = async (
 
         case "fix":
             if (scanResults.length === 0) {
-                stream.markdown("⚠️ No scan results available. Please run `/scan <url>` first.");
+                stream.markdown("⚠️ No scan results available. Please scan a URL first by providing a website URL.");
                 return;
             }
-            const fixIndex = parseInt(request.prompt, 10);
+
+            // Extract issue number if present in the query
+            const issueMatch = content.match(/\b(\d+)\b/);
+            const fixIndex = issueMatch ? parseInt(issueMatch[1], 10) : -1;
+
             if (isNaN(fixIndex) || fixIndex < 0 || fixIndex >= scanResults.length) {
-                stream.markdown("⚠️ Invalid issue number. Please provide a valid issue number from the scan results.");
+                stream.markdown("⚠️ Please specify a valid issue number from the scan results, or describe the issue you want to fix.");
                 return;
             }
 
@@ -108,9 +136,11 @@ const handler: vscode.ChatRequestHandler = async (
                     apiUrl,
                     "fix",
                     apiKey,
-                    `Fix this accessibility issue:  
-                        Description: ${violation.help}
-                        HTML Context: ${violation.html}`
+                    `Fix this accessibility issue:
+
+Description: ${violation.help}
+
+HTML Context: ${violation.html}`
                 );
 
                 // Validate API response
@@ -127,13 +157,13 @@ const handler: vscode.ChatRequestHandler = async (
             return;
 
         case "explain":
-        default:
-            if (!request.prompt) {
-                stream.markdown("⚠️ Please specify an issue or guideline to explain. Example: `/explain WCAG 2.1 AA`");
+            if (!content) {
+                stream.markdown("⚠️ Please specify what you'd like me to explain about accessibility.");
                 return;
             }
+
             try {
-                const apiResponse = await queryAccessibilityApi(apiUrl, "explain", apiKey, request.prompt);
+                const apiResponse = await queryAccessibilityApi(apiUrl, "explain", apiKey, content);
 
                 // Validate API response
                 if (!apiResponse || typeof apiResponse !== "object") {
