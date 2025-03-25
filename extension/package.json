@@ -1,0 +1,91 @@
+{
+    "name": "axessai",
+    "displayName": "Axess AI",
+    "description": "AI-powered accessibility assistant integrated with Visual Studio Code",
+    "version": "2.0.0",
+    "publisher": "StormBorns",
+    "icon": "media/axessai-icon.png",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/StormBorns/axessai.git"
+    },
+    "engines": {
+        "vscode": "^1.98.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "axessai.startChat",
+                "title": "Start Accessibility Chat"
+            }
+        ],
+        "chatParticipants": [
+            {
+                "id": "vscode-axessai-chat",
+                "name": "axessAI",
+                "description": "Can find, explain and solve accessibility issues in your application.",
+                "isSticky": true,
+                "commands": [
+                    {
+                        "name": "fix",
+                        "description": "Give issue number from scan to get suggestions to fix the issue."
+                    },
+                    {
+                        "name": "scan",
+                        "description": "Give a URL to find accessibility issues."
+                    },
+                    {
+                        "name": "explain",
+                        "description": "Ask anything about accessibility"
+                    }
+                ]
+            }
+        ],
+        "configuration": {
+            "title": "Axess AI",
+            "properties": {
+                "axessAI.apiEndPoint": {
+                    "type": "string",
+                    "default": "http://localhost:8000",
+                    "description": "Axess AI Agent Endpoint, if you are using local agent, use http://localhost:8000"
+                },
+                "axessAI.openApiKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Open API Key"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src",
+        "test": "vscode-test",
+        "prettier": "prettier --write .",
+        "prettier:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.10",
+        "@types/node": "20.x",
+        "@types/vscode": "^1.98.0",
+        "@typescript-eslint/eslint-plugin": "^8.25.0",
+        "@typescript-eslint/parser": "^8.25.0",
+        "@vscode/test-cli": "^0.0.10",
+        "@vscode/test-electron": "^2.4.1",
+        "eslint": "^9.21.0",
+        "prettier": "3.5.3",
+        "typescript": "^5.7.3"
+    },
+    "dependencies": {
+        "axios": "^1.6.2"
+    }
+}

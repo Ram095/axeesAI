@@ -1,0 +1,3460 @@
+ARIA role/attribute name: aria-activedescendant
+
+The aria-activedescendant attribute identifies the currently active element when focus is on a composite widget, combobox, textbox, group, or application.
+
+Description
+
+The aria-activedescendant property provides a method of managing focus for assistive technologies on interactive elements when they contain multiple focusable descendants, such as menus, grids, and toolbars. Instead of the screen reader moving focus between owned elements, aria-activedescendant can be used on container elements to refer to the currently active element, informing assistive technology users of the currently active element when focused.
+With aria-activedescendant, the browser keeps the DOM focus on the container element or on an input element that controls the container element. However, the user agent communicates desktop focus events and states to the assistive technology as if the element referenced by aria-activedescendant has focus.
+This attribute is only relevant on elements with role of composite widget, combobox, textbox, group, or application whose id is referenced as the attribute value.
+The attribute manages providing assistive technologies with information as to which element has focus, but doesn't actually create focus. Changing focus and managing the attributes value is done with JavaScript. In addition to managing that attribute value, make sure the currently active descendant is visible and in view (or scrolls into view) when focused.
+In setting the value of aria-activedescendant on an element with DOM focus, ensure the value refers to an owned element—either a descendant of the element with DOM focus OR a logical descendant as indicated by the aria-owns attribute.
+When the element with DOM focus is a combobox, textbox, or searchbox, include aria-controls to refer to the element that supports aria-activedescendant.
+The value of aria-activedescendant refers to an owned element of the controlled element. For example, in a combobox, focus may remain on the combobox while the value of aria-activedescendant on the combobox element refers to a descendant of a popup listbox that is controlled by the combobox.
+Note: The attribute is supported only on a few roles. For example, dialogs do not support aria-activedescendant. When a combobox opens a dialog, DOM focus moves into the dialog from the combobox as it is not referenceable with this attribute.
+Note: When a descendant of a listbox, grid, or tree popup is focused, DOM focus remains on the combobox and the combobox has aria-activedescendant set to a value that refers to the focused element within the popup.
+Values
+ID reference
+
+takes as its value the id of the currently focused element.
+Associated roles
+
+Relevant only as an attribute on elements with the following roles:
+
+application
+combobox
+composite
+group
+textbox
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-atomic
+
+In ARIA live regions, the global aria-atomic attribute indicates whether assistive technologies such as a screen reader will present all, or only parts of, the changed region based on the change notifications defined by the aria-relevant attribute.
+
+Description
+
+Live regions are sections of a web page that are updated, whether by user interaction or not, when user focus is elsewhere. As they update outside the user's focus, assistive technologies such as screen readers may not "see" the update to report it to the user. WAI-ARIA has 4 properties that allow the developer to identify these live regions and tell the assistive technology how to process them, including aria-live, aria-relevant, aria-busy and aria-atomic.
+When the content of a live region changes, the DOM is traversed from the changed element through its ancestors to find the first element with aria-atomic set. This determines the content that the user should be presented with.
+If no ancestor has explicitly set aria-atomic, only the node or nodes of live region content that have been updated are read. The difference between omitting aria-atomic altogether and explicitly setting an ARIA live region's ancestor node with aria-atomic="false" is that explicitly setting aria-atomic="false" will stop the screen reader from going up the ancestor chain. Both lead to only the updated node being read. When set to aria-atomic="true", the entire changed region as a whole will be presented, including the updated node's label, if there is one.
+Values
+false (default)
+
+present only the changed node or nodes.
+true
+
+present the entire changed region as a whole, including the author-defined label if one exists.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-autocomplete
+
+The aria-autocomplete attribute indicates whether inputting text could trigger display of one or more predictions of the user's intended value for a combobox, searchbox, or textbox and specifies how predictions will be presented if they are made.
+
+Description
+
+Autocompletion is user interface feature wherein inline suggestions are made as a user types in an input. Suggested text for completing the value of the field dynamically appears in the field after the input cursor, and the suggested value becomes the value if the user performs an action, such as tabbing, that causes focus to leave the field.
+The aria-autocomplete property describes the type of autocompletion interaction model a textbox, searchbox, or combobox will use when dynamically helping users complete text input. It distinguishes between two models: the inline model (aria-autocomplete="inline"), which presents a single predicted value and the list model (aria-autocomplete="list"), which presents a collection of possible values in a separate element that pops up next to or below the text input, similar to a <datalist>. A third value, aria-autocomplete="both" is for when the interface will present a list while also including a predicted value. The default is none, meaning the textbox, searchbox, or combobox will not provide an auto complete value.
+The aria-autocomplete property only describes the type of predictive behavior for an input element for assistive technologies; it doesn't provide the functionality. The actual autocompletion should be provided using HTML attributes or JavaScript.
+If the suggested autocomplete value provides suggested values that aren't dependent on the input provided by the user, consider omitting autocomplete for everyone. For example, a searchbox input displaying unfiltered recent search terms may be helpful to a marketing team on an e-commerce site, but likely isn't helpful for the screen reader user. When it is best to not specify a value for aria-autocomplete or to set the value to the none default, likely your non-assistive technology users also don't need the experience.
+When implementing autocomplete functionality, ensure the suggested portion of the value is presented as selected text to enable distinguishing between a user's input and the suggestion. Make sure that when the suggested value is not the desired value, users can easily delete the suggestion or replace it by continuing to type.
+When implementing a list of values, DOM focus should remain on the text input while the suggestion list is displayed.
+include aria-controls with the value of the id of the suggested list of values.
+include aria-haspopup matching the role of the element that contains the collection of suggested values.
+manage focus, if required, including using aria-activedescendant if the collection container supports.
+use the aria-expanded state on the element with role combobox to communicate that the list is displayed.
+If an autocomplete list value is automatically accepted when the field loses focus, the list must be contained in a role that supports aria-activedescendant, with the value of aria-activedescendant on the input field dynamically adjusted to refer to the element containing the selected suggestion.
+Values
+none (default)
+
+When a user is providing input, no automatic suggestion is displayed.
+inline
+
+aria-autocomplete="inline" text suggesting one way to complete the provided input may be dynamically inserted after the caret.
+list
+
+aria-autocomplete="list" When a user is providing input, an element containing a collection of values that could complete the provided input may be displayed.
+both
+
+aria-autocomplete="both" an input to offer both models at the same time. When a user is providing input, an element containing a collection of values that could complete the provided input may be displayed. If displayed, one value in the collection is automatically selected, and the text needed to complete the automatically selected value appears after the caret in the input.
+Associated roles
+
+Used in roles:
+
+combobox role
+textbox role
+inherits from searchbox role
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-braillelabel
+
+The global aria-braillelabel property defines a string value that labels the current element, which is intended to be converted into Braille.
+
+Description
+
+The global aria-braillelabel attribute is similar to the global aria-label in that it defines a string value that labels the current element. While aria-label is read by the screen reader, the contents of the aria-braillelabel attribute are converted into Braille; providing the user with a recognizable name of the object in braille.
+The purpose of the aria-braillelabel property is to override how assistive technologies localize and express the accessible name of an element in Braille. It should only be used when, without this attribute, the accessible name would not be the desired user experience when converted to braille.
+When using aria-braillelabel, ensure that:
+
+The element to which aria-braillelabel is applied has a valid accessible name.
+The value of aria-braillelabel has actual content and is not empty or only whitespace in unicode or unicode braille.
+The value is NOT the same as the accessible name.
+The aria-braillelabel values are localized to align with the document language.
+Communicate to the user that this attribute is available, especially if the content contains unicode braille patterns, so the user knows to set the settings to apply user specific braille translations
+
+Note: Assistive technologies with braille support can convert the accessible names to braille. Therefore, only use aria-braillelabel when the accessible name is not the user experience you want.
+Using only the accessible name, e.g., from content or via aria-label is almost always the better user experience, so don't use aria-braillelabel to replicate aria-label. Only use aria-braillelabel if the accessible name cannot provide an adequate braille representation.
+HTML
+Copy to Clipboard
+<button aria-braillelabel="***">
+  <img alt="3 out of 5 stars" src="three_stars.png" />
+</button>
+
+
+A braille display may display "btn ***" in Braille rather than the more verbose "btn gra 3 out of 5 stars".
+Values
+<string>
+
+The value is a string, an unconstrained value type, that is intended to be converted into braille.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-brailleroledescription
+
+The global aria-brailleroledescription attribute defines a human-readable, author-localized abbreviated description for the role of an element intended to be converted into Braille.
+
+Description
+
+Braille is not a one-to-one transliteration of letters and numbers, but rather it includes various abbreviations, contractions, and characters that represent words (known as logograms).
+Instead of converting long role descriptions to Braille, the aria-brailleroledescription attribute allows for providing an abbreviated version of the aria-roledescription value, which is a human-readable, author-localized description for the role of an element, for improved user experience with braille interfaces.
+Basically, the value of aria-brailleroledescription is an abbreviated version of the aria-roledescription attribute to be converted into Braille.
+HTML
+Copy to Clipboard
+<article
+  aria-roledescription="slide"
+  aria-brailleroledescription="sld"
+  aria-labelledby="slide1heading">
+  <h1 id="slide1heading">Welcome to my talk</h1>
+  <img alt="Me" src="images/me.jpg" />
+</article>
+
+
+Most assistive technologies, like screen readers, will read the above as "slide, welcome to my talk. Image, Me." Braille assistive technologies will present "sld welcome to my talk gra me" in braille. The semantic <article> is given the role of "slide" by the aria-roledescription attribute; "slide" being a role not defined in the specification, but is a common role for slides in a presentation. In Braille, the role is presented as "sld". The "gra" is short for "graphic", which is how the "image" role is shortened in braille.
+The aria-brailleroledescription attribute should only be used to clarify the purpose of non-interactive container roles like "group" or "region", or to provide a more specific description of a widget in a braille context.
+As the aria-brailleroledescription attribute overrides how assistive technologies localize and express the name of a role in braille, inappropriate values will prevent users from understanding and interacting with an element on braille interfaces.
+Only use aria-brailleroledescription if aria-roledescription is present. However, if the aria-roledescription value works in braille, the braille version of the attribute is not needed. In general, aria-brailleroledescription should only be used in the rare case when a aria-roledescription is too verbose for braille.
+A few rules to remember:
+
+Only apply aria-brailleroledescription to elements with a valid ARIA role or elements with implicit role semantics.
+The aria-brailleroledescription, if present, must have a non-empty, none null value that is different from the aria-roledescription value, which, in turn, is different from the ARIA explicit or role or implicit semantic role.
+Avoid using Unicode Braille Patterns. If they must be used, ensure the aria-brailleroledescription value contains content other than unicode braille patterns, whitespace, and braille pattern dots-0.
+Ensure the value is always localized to the document's language.
+Warning: If the content is only in unicode braille patterns, the value will not be translated according to the user's preferred translation table.
+Note: Do NOT use aria-brailleroledescription to replicate aria-roledescription. Only include this attribute when aria-roledescription does not provide an adequate braille representation.
+The aria-brailleroledescription value will not be exposed to the braille user if:
+
+The value is empty or contains only whitespace characters or the empty braille pattern: dots-0 (U+2800).
+The element to which the attribute is applied has an explicit or implicit WAI-ARIA role where aria-brailleroledescription is prohibited, including the generic role.
+The element to which the attribute is applied does not have a valid aria-roledescription.
+Note: Test your sites and applications with daily users of assistive technologies, including braille readers, to ensure your content makes sense in braille.
+Values
+<string>
+
+The value is a string, an unconstrained value type, that is intended to be converted into braille
+
+Associated roles
+
+Used in ALL roles (except generic).
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-busy
+
+Used in ARIA live regions, the global aria-busy state indicates an element is being modified and that assistive technologies may want to wait until the changes are complete before informing the user about the update.
+
+When multiple parts of a live region need to be loaded before changes are announced to the user, set aria-busy="true" until loading is complete. Then set to aria-busy="false". This prevents assistive technologies from announcing changes before updates are done.
+
+Description
+
+There is a section of content that updates. The updates are important and you want to let the user know when it has been modified, so you have converted it into an ARIA live region with the aria-live attribute. You may want to update several components of that section at the same time, but you can't be sure that everything will update simultaneously. Even if it is a very important live region with aria-live="assertive", you don't want to interrupt the user multiple times as different parts of the content load. This is where aria-busy can help.
+The aria-busy property is an optional property of live regions that can have the value true or false. The aria-busy attribute with a value of true can be added to an element currently being updated or modified, to inform the assistive technology that it should wait until the modifications or changes are complete before exposing the content to the user. Use the ariaBusy property of the object to change the value to false when downloading is complete.
+JS
+Copy to Clipboard
+ariaLiveElement.ariaBusy = "false";
+
+
+aria-live's value dictates whether the changes are announced immediately upon changing the value to false, or the assistive technology waits until the current task is complete before interrupting the user.
+Within a feed
+
+If an element with feed role has aria-busy set to true, the rendering changes that occur inside the feed will not be announced with the exception of user-initiated changes.
+Within a widget
+
+If changes to a rendered widget would create a state where the widget is missing required owned elements during script execution, set aria-busy to true on the widget during the update process. For example, if a rendered tree grid updates multiple branches not necessarily rendered simultaneously, an alternative to replacing the whole tree in a single update would be to mark the tree busy while each of the branches is modified.
+Values
+false (default):
+
+There are no expected updates for the element.
+true
+
+The element is being updated.
+Associated interfaces
+Element.ariaBusy
+
+The ariaBusy property, part of each element's interface, reflects the value of the aria-busy attribute, which indicates whether an element is being modified.
+HTML
+Copy to Clipboard
+<div
+  id="clock"
+  role="timer"
+  aria-live="polite"
+  aria-atomic="true"
+  aria-busy="false"></div>
+
+JS
+Copy to Clipboard
+const el = document.getElementById("clock");
+console.log(el.ariaBusy); // false
+el.ariaBusy = "true";
+console.log(el.ariaBusy); // true
+
+Associated roles
+
+Used in ALL roles
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-checked
+
+The aria-checked attribute indicates the current "checked" state of checkboxes, radio buttons, and other widgets.
+
+Note: Where possible use an HTML <input> element with type="checkbox" and type="radio" as these have built in semantics and do not require ARIA attributes.
+
+Description
+
+The aria-checked attribute indicates whether the element is checked (true), unchecked (false), or if the checked status is indeterminate (mixed), meaning it is neither checked nor unchecked. The mixed value is supported by the tri-state input roles of checkbox and menuitemcheckbox.
+The mixed value is not supported on radio, menuitemradio, or switch and elements that inherits from these. The value will be false if mixed is set when not supported.
+HTML
+Copy to Clipboard
+<span
+  role="checkbox"
+  id="checkBoxInput"
+  aria-checked="false"
+  tabindex="0"
+  aria-labelledby="chk15-label"></span>
+<label id="chk15-label">Subscribe to the newsletter</label>
+
+
+The tabindex attribute is required to enable focus. JavaScript is required to toggle the aria-checked state. And, if this checkbox is part of a submittable form, more JavaScript is required to set a name and a value.
+The above could have been written as:
+
+HTML
+Copy to Clipboard
+<input type="checkbox" id="chk15-label" name="Subscribe" />
+<label for="chk15-label">Subscribe to the newsletter</label>
+
+
+By using the <input> element with type="checkbox" instead of ARIA, there is no need for any JavaScript.
+Values
+false
+
+The element supports being checked but is not currently checked.
+true
+
+The element is checked.
+mixed
+
+for checkbox and menuitemcheckbox only, equivalent to indeterminate, indicating a mixed mode value of neither checked nor unchecked.
+undefined (default)
+
+The element does not support being checked.
+Associated roles
+
+Used in roles:
+
+checkbox
+menuitemcheckbox
+menuitemradio
+option
+radio
+switch
+
+Associated interfaces
+Element.ariaChecked
+
+The ariaChecked property, part of the Element interface, reflects the value of the aria-checked attribute.
+ElementInternals.ariaChecked
+
+The ariaChecked property, part of the ElementInternals interface, reflects the value of the aria-checked attribute.
+JS
+Copy to Clipboard
+myHTMLElement.ariaChecked = true;
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-colcount
+
+The aria-colcount attribute defines the total number of columns in a table, grid, or treegrid when not all columns are present in the DOM.
+
+Description
+
+Some tables are very large, and it's not possible to show all the columns to the user. Or, it is possible, but having such a wide table would be a bad user experience. Use the aria-colcount attribute to let assistive technologies know how many columns the table would have if all columns were present. The value is an integer representing the number of columns that make up the full table. If you don't know the total number of columns a table will have, but know they will not all be in the DOM, use the value -1, so aria-colcount="-1". This value tells the user agent that the current number of columns present in the DOM may not be the actual number of columns in the table.
+If all columns in a table are present in the DOM, the aria-colcount attribute isn't needed, as browsers automatically calculate the total number of columns. However, if only a portion of the columns is present in the DOM at a given moment, that is when this attribute is helpful and needed.
+When using aria-colcount when you have a known number of columns, make sure to also use aria-colindex to label each column, or, if the columns are contiguous－if it's a group of columns in the original order with no breaks－label each row.
+The following example shows a grid with 6 columns, of which columns 1, 2, 5, and 6 are displayed to the user. The total number of columns that make up the table is set as aria-colcount="6" on the table itself. As the columns aren't contiguous, every cell - in this case columnheader and gridcell elements - have the aria-colindex attribute set.
+HTML
+Copy to Clipboard
+<div role="grid" aria-colcount="6">
+  <div role="rowgroup">
+    <div role="row">
+      <div role="columnheader" aria-colindex="1">First name</div>
+      <div role="columnheader" aria-colindex="2">Last name</div>
+      <div role="columnheader" aria-colindex="5">City</div>
+      <div role="columnheader" aria-colindex="6">Zip</div>
+    </div>
+  </div>
+  <div role="rowgroup">
+    <div role="row">
+      <div role="gridcell" aria-colindex="1">Debra</div>
+      <div role="gridcell" aria-colindex="2">Burks</div>
+      <div role="gridcell" aria-colindex="5">New York</div>
+      <div role="gridcell" aria-colindex="6">14127</div>
+    </div>
+  </div>
+  …
+</div>
+
+
+The first rule of ARIA use is "if you can use a native feature with the semantics and behavior you require already built in, instead of repurposing an element and adding an ARIA role, state or property to make it accessible, then do so." If we employ native HTML semantics with <table>, <th>, <td>, etc., the aria-colcount attribute is still necessary, but the mark up is not as verbose. When using semantic table header elements and not all columns are in the DOM, the aria-colcount must still be used, but the aria-colindex attribute only needs to be defined once per column in the column header <th>.
+HTML
+Copy to Clipboard
+<table aria-colcount="6">
+  <thead>
+    <tr>
+      <th aria-colindex="1" scope="col">First name</th>
+      <th aria-colindex="2" scope="col">Last name</th>
+      <th aria-colindex="5" scope="col">City</th>
+      <th aria-colindex="6" scope="col">Zip</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Debra</td>
+      <td>Burks</td>
+      <td>New York</td>
+      <td>14127</td>
+    </tr>
+    …
+  </tbody>
+</table>
+
+Values
+<integer>
+
+The number of columns in the full table
+
+Associated roles
+
+Used in roles:
+
+table
+
+Inherits into roles:
+
+grid
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-colindex
+
+The aria-colindex attribute defines an element's column index or position with respect to the total number of columns within a table, grid, or treegrid.
+
+Description
+
+Some tables are very large, and as a result have only a portion of its content is initially displayed. While loading only a subsection of the columns may improve user experience, you need to let all users know what portions of the content are being displayed, and that all the table's content is not present.
+ARIA provides several attributes to provide information about table, grid, and treegrid structures. The aria-colindex attribute defines the substructure, an element's column index or position with respect to the total number of columns, within such structures.
+Used in conjunction with the aria-colcount attribute, which informs assistive technologies how many columns the table would have if all columns were present, the aria-colindex is used an element's column index or position with respect to that total number of columns.
+If all of the columns are present in the DOM, including aria-colindex is not necessary as user agents can calculate the column index of each cell or gridcell. However, if any of the columns are left out of the DOM at any time, use aria-colindex to indicate the column of each cell or gridcell with respect to the full table.
+The value for aria-colindex is an integer greater than or equal to 1. Each value should be greater than the previous column's aria-colindex and less than or equal to the number of columns in the full table.
+If a cell or gridcell spans multiple columns, set aria-colspan to the number of columns it spans if not using <td> and <th> HTML elements, and set aria-colindex to the value of the start of the span; the value it would have had if it was only one column wide spanning only the first of its columns.
+If the set of columns which is present in the DOM is contiguous, and if there are no cells which span more than one row or column in that set, you only have to put the aria-colindex once on each row on the first column of the set. If the columns are not contiguous, include the aria-colindex value on all of the children or owned elements of each row.
+The following example shows a grid with 6 columns, of which columns 1, 2, 5, and 6 are displayed to the user. The total number of columns that make up the table is set as aria-colcount="6" on the table itself. As the columns aren't contiguous, every cell - in this case columnheader and gridcell elements - have the aria-colindex attribute set.
+HTML
+Copy to Clipboard
+<div role="grid" aria-colcount="6">
+  <div role="rowgroup">
+    <div role="row">
+      <div role="columnheader" aria-colindex="1">First name</div>
+      <div role="columnheader" aria-colindex="2">Last name</div>
+      <div role="columnheader" aria-colindex="5">City</div>
+      <div role="columnheader" aria-colindex="6">Zip</div>
+    </div>
+  </div>
+  <div role="rowgroup">
+    <div role="row">
+      <div role="gridcell" aria-colindex="1">Debra</div>
+      <div role="gridcell" aria-colindex="2">Burks</div>
+      <div role="gridcell" aria-colindex="5">New York</div>
+      <div role="gridcell" aria-colindex="6">14127</div>
+    </div>
+  </div>
+  …
+</div>
+
+
+The first rule of ARIA use is "if you can use a native feature with the semantics and behavior you require already built in, instead of repurposing an element and adding an ARIA role, state or property to make it accessible, then do so." If we employ native HTML semantics with <table>, <th>, <td>, etc., and only display a subsection of columns, the aria-colcount and aria-colindex attribute are still necessary, but the mark up is not as verbose.
+When using semantic table header elements and not all columns are in the DOM, the aria-colindex attribute only needs to be defined once per column in the column header <th>.
+HTML
+Copy to Clipboard
+<table aria-colcount="6">
+  <thead>
+    <tr>
+      <th aria-colindex="1" scope="col">First name</th>
+      <th aria-colindex="2" scope="col">Last name</th>
+      <th aria-colindex="5" scope="col">City</th>
+      <th aria-colindex="6" scope="col">Zip</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Debra</td>
+      <td>Burks</td>
+      <td>New York</td>
+      <td>14127</td>
+    </tr>
+    …
+  </tbody>
+</table>
+
+
+If all the columns are in the DOM, neither aria-colcount nor aria-colindex are necessary.
+Values
+<integer>
+
+Integer greater than or equal to 1 and less than or equal to the total number of columns if all were present.
+Associated interfaces
+Element.ariaColIndex
+
+The ariaColIndex property, part of the Element interface, reflects the value of the aria-colindex attribute.
+ElementInternals.ariaColIndex
+
+The ariaColIndex property, part of the ElementInternals interface, reflects the value of the aria-colindex attribute.
+Associated roles
+
+Used in roles:
+
+cell
+row
+
+Inherits into roles:
+
+columnheader
+gridcell
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-colindextext
+
+The aria-colindextext attribute defines a human-readable text alternative of the numeric aria-colindex.
+
+Description
+
+When you have a very large table or when you purposefully want to display just a section of a table, not all columns may be present in the DOM. When this happens, we use the aria-colcount with an integer value to define how many columns the table (or grid) would have if all the columns were present and add the aria-colindex property on each column to provide information on the column index within that larger table.
+In the following HTML snippet, our table has 8 columns, but we are only displaying 4. The "city" column is the fifth column of our larger table, as defined by aria-colindex="5".
+HTML
+Copy to Clipboard
+<table aria-colcount="8">
+  <thead>
+    <tr>
+      <th aria-colindex="1" scope="col">First name</th>
+      <th aria-colindex="2" scope="col">Last name</th>
+      <th aria-colindex="5" scope="col">City</th>
+      <th aria-colindex="7" scope="col">Zip</th>
+    </tr>
+  </thead>
+  …
+</table>
+
+
+This table is not very complex. Had this been a 100+ column spreadsheet or a grid without column headers, such as a chess board, the provided or calculated value of aria-colindex might not be meaningful or may not reflect the displayed index. When this is the case, aria-colindextext can be included. The value is a string that is a human-readable text alternative to the numeric aria-colindex.
+HTML
+Copy to Clipboard
+<table aria-colcount="128">
+  <thead>
+    <tr>
+      <th aria-colindex="1" aria-colindextext="NYSE stock symbol" scope="col">
+        NYSE
+      </th>
+      <th
+        aria-colindex="110"
+        aria-colindextext="Value at start of 2021"
+        scope="col">
+        01/21
+      </th>
+      <th
+        aria-colindex="122"
+        aria-colindextext="Value at start of 2022"
+        scope="col">
+        01/22
+      </th>
+      <th aria-colindex="124" scope="col">Recommendation</th>
+    </tr>
+  </thead>
+  …
+</table>
+
+
+In the above example, the table has 128 columns of which only 4 columns are shown. The aria-colindextext is used in three columns to provide human-readable text alternatives. By including aria-colindextext="Value at start of 2021", assistive technologies can announce "Value at start of 2021" instead of "Column 110".
+Only use aria-colindextext when the provided or calculated value of aria-colindex is not meaningful or does not reflect the displayed index. Whenever you include aria-colindextext, also keep the aria-colindex as some assistive technologies rely on the numeric column index for the purpose of keeping track of the user's position and in providing alternative table navigation.
+Note: While aria-colindex can be added to a row when all the columns present are contiguous as sequential values can be deduced, aria-colindextext is NOT a supported property of row.
+See related aria-rowindextext.
+Values
+<string>
+
+The human-readable text alternative of the numeric aria-colindex
+
+Associated interfaces
+Element.ariaColIndexText
+
+The ariaColIndexText property, part of the Element interface, reflects the value of the aria-colindextext attribute.
+ElementInternals.ariaColIndexText
+
+The ariaColIndexText property, part of the ElementInternals interface, reflects the value of the aria-colindextext attribute.
+Associated roles
+
+Used in roles:
+
+cell
+
+Inherits into roles:
+
+columnheader
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-colspan
+
+The aria-colspan attribute defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
+
+Description
+
+Intended for cells and gridcells which are not contained in a native HTML <table>, the aria-colspan property value defines the number of columns spanned by an individual cell an ARIA table, grid, or treegrid.
+In HTML, <th> and <td> elements have the colspan attribute. When using the semantic <table>, use the native colspan attribute as designed. This ARIA attribute is intended for cells and gridcells which are not contained in a native table, and will be ignored if used on a cell in a <table>.
+Note: The first rule of ARIA use is if you can use a native feature with the semantics and behavior you require already built in, instead of repurposing an element and adding an ARIA role, state or property to make it accessible, then do so. Employ HTML <table> elements, including <td> and <th> with the colspan attribute instead of non-semantic elements with ARIA roles and attributes whenever possible.
+The value of aria-colspan should be a positive integer. The default or assumed value of a cell span is 1. Make sure that the included value does cause the cell or gridcell to overlap the next cell or gridcell in the same row and does not cause the cell to span outside of the containing table, grid, or treegrid.
+Example
+
+The following is an example of part of a bowling tournament league scoring spreadsheet. Each game spans 10 frames, and each frame spans a 3 scores: two balls and the current total. The 10th (and last) frame in each game spans 4 columns in case someone is scoring all strikes.
+HTML
+Copy to Clipboard
+<div role="grid" aria-rowcount="27">
+  aria-label="Bowling League Scores"
+  <div role="rowgroup">
+    <div role="row" aria-rowindex="1">
+      <!--
+            aria-rowspan and aria-colspan provide
+            assistive technologies with the correct data cell header information
+            when header cells span more than one row or column.
+          -->
+
+      <span role="columnheader" aria-rowspan="2">Team</span>
+      <span role="columnheader" aria-colspan="2">Player</span>
+      <span role="columnheader" aria-colspan="31">Game 1 Frames</span>
+      <span role="columnheader" aria-colspan="31">Game 2 Frames</span>
+      <span role="columnheader" aria-colspan="31">Game 3 Frames</span>
+      <span role="columnheader" aria-rowspan="2">Total</span>
+    </div>
+    <div role="row" aria-rowindex="2">
+      <span role="columnheader">Last Name</span>
+      <span role="columnheader">First Name</span>
+      <span role="columnheader" aria-colspan="3">1</span>
+      <span role="columnheader" aria-colspan="3">2</span>
+      <span role="columnheader" aria-colspan="3">3</span>
+      <span role="columnheader" aria-colspan="3">4</span>
+      <span role="columnheader" aria-colspan="3">5</span>
+      <span role="columnheader" aria-colspan="3">6</span>
+      <span role="columnheader" aria-colspan="3">7</span>
+      <span role="columnheader" aria-colspan="3">8</span>
+      <span role="columnheader" aria-colspan="3">9</span>
+      <span role="columnheader" aria-colspan="4">10</span>
+      <span role="columnheader" aria-colspan="3">1</span>
+      <span role="columnheader" aria-colspan="3">2</span>
+      <span role="columnheader" aria-colspan="3">3</span>
+      <span role="columnheader" aria-colspan="3">4</span>
+      <span role="columnheader" aria-colspan="3">5</span>
+      <span role="columnheader" aria-colspan="3">6</span>
+      <span role="columnheader" aria-colspan="3">7</span>
+      <span role="columnheader" aria-colspan="3">8</span>
+      <span role="columnheader" aria-colspan="3">9</span>
+      <span role="columnheader" aria-colspan="4">10</span>
+      <span role="columnheader" aria-colspan="3">1</span>
+      <span role="columnheader" aria-colspan="3">2</span>
+      <span role="columnheader" aria-colspan="3">3</span>
+      <span role="columnheader" aria-colspan="3">4</span>
+      <span role="columnheader" aria-colspan="3">5</span>
+      <span role="columnheader" aria-colspan="3">6</span>
+      <span role="columnheader" aria-colspan="3">7</span>
+      <span role="columnheader" aria-colspan="3">8</span>
+      <span role="columnheader" aria-colspan="3">9</span>
+      <span role="columnheader" aria-colspan="4">10</span>
+    </div>
+  </div>
+  <div role="rowgroup">
+    <div role="row" aria-rowindex="10">
+      <span role="rowheader" aria-rowspan="3">The Mighty Quokkas</span>
+      <span role="cell">Henderson</span>
+      <span role="cell">Alice</span>
+      <span role="cell">7</span>
+      <span role="cell">/</span>
+      <span role="cell">20</span>
+      <span role="cell" aria-colspan="2">X</span>
+      <span role="cell">39</span>
+      <span role="cell">9</span>
+      <span role="cell">-</span>
+      <span role="cell">48</span>
+      <span role="cell" aria-colspan="2">X</span>
+      <span role="cell">76</span>
+      <span role="cell" aria-colspan="2">X</span>
+      <span role="cell">96</span>
+      <span role="cell">8</span>
+      <span role="cell">/</span>
+      <span role="cell">113</span>
+      <span role="cell">7</span>
+      <span role="cell">-</span>
+      <span role="cell">120</span>
+      <span role="cell" aria-colspan="2">X</span>
+      <span role="cell">146</span>
+      <span role="cell" aria-colspan="2">X</span>
+      <span role="cell">166</span>
+      <span role="cell">6</span>
+      <span role="cell">/</span>
+      <span role="cell">X</span>
+      <span role="cell">186</span>
+      <span role="cell">7</span>
+      <span role="cell">2</span>
+      <span role="cell">9</span>
+      <span role="cell">6</span>
+      <span role="cell">-</span>
+      <span role="cell">15</span>
+      <span role="cell" aria-colspan="2">X</span>
+      <span role="cell">35</span>
+      <span role="cell">7</span>
+      <span role="cell">/</span>
+      …
+    </div>
+    <div role="row" aria-rowindex="11">
+      <span role="cell">McPherson</span>
+      <span role="cell">Leslie</span>
+      <span role="cell">9</span>
+      <span role="cell">-</span>
+      <span role="cell">9</span>
+      <span role="cell">8</span>
+      <span role="cell">1</span>
+      <span role="cell">18</span>
+      …
+    </div>
+  </div>
+</div>
+
+
+If we had used a <table> and semantic table elements our markup would have been less verbose and accessible by default.
+Values
+<integer>
+
+An integer greater than or equal to the default value of 1 defining the number of columns spanned by the cell. The value must be less than what would cause a cell to overlap the next cell in the same row.
+Associated interfaces
+Element.ariaColSpan
+
+The ariaColSpan property, part of each element's interface, reflects the value of the aria-colspan attribute, which defines the number of columns spanned by a cell or gridcell within a table, grid, or treegrid.
+Associated roles
+
+Used in roles:
+
+cell
+
+Inherits into roles:
+
+columnheader
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-controls
+
+The global aria-controls property identifies the element (or elements) whose contents or presence are controlled by the element on which this attribute is set.
+
+Description
+
+When an interactive widget or element, be it a combobox, tab, button, etc., is used to adjust or modify another element or component in a document or application, the aria-controls attribute can be used to programmatically associate the corresponding element or elements with the controlling element. The aria-controls attribute identifies the element (or elements) whose contents or presence are controlled by the element on which the attribute is set, regardless of what type of interaction initiates the impacted behavior.
+A combobox element has aria-controls set to a value that refers to the element that serves as the popup. The aria-controls only needs to be set when the popup is visible, but it is valid and easier to program to reference an element that is not visible.
+Other examples of controls include:
+
+The button parts of an accordion widget that toggle the visibility of their associated panel content. Each button may have an aria-controls specified, referencing the ID of the element containing the content associated with the invoking control.
+An element with a role of scrollbar: the scrollbar requires an aria-controls attribute referencing the ID of the element it controls.
+A group of tabs that each display a different tab panel: each element with role="tab" has an aria-controls attribute referencing its associated tabpanel.
+Example
+
+In this tabs example, each tab controls one tabpanel:
+
+HTML
+Copy to Clipboard
+<div class="tab-interface">
+  <div role="tablist" aria-label="Sample Tabs">
+    <span
+      role="tab"
+      aria-selected="true"
+      aria-controls="panel-1"
+      id="tab-1"
+      tabindex="0">
+      First Tab
+    </span>
+    <span
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-2"
+      id="tab-2"
+      tabindex="-1">
+      Second Tab
+    </span>
+    <span
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-3"
+      id="tab-3"
+      tabindex="-1">
+      Third Tab
+    </span>
+  </div>
+  <div id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
+    <p>Content for the first panel</p>
+  </div>
+  <div
+    id="panel-2"
+    role="tabpanel"
+    tabindex="0"
+    aria-labelledby="tab-2"
+    class="display-none">
+    <p>Content for the second panel</p>
+  </div>
+  <div
+    id="panel-3"
+    role="tabpanel"
+    tabindex="0"
+    aria-labelledby="tab-3"
+    class="display-none">
+    <p>Content for the third panel</p>
+  </div>
+</div>
+
+
+Note: ARIA only modifies the accessibility tree for an element, identifying how assistive technology can present the content to users. ARIA doesn't change any implicit functionality or styling.
+Values
+id list
+
+A space-separated list of one or more ID values referencing the elements being controlled by the current element
+
+Associated interfaces
+Element.ariaControlsElements
+
+The ariaControlsElements property is part of each element's interface. Its value is a list of Elements corresponding to the ID values specified in the aria-controls attribute.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-current
+
+A non-null aria-current state on an element indicates that this element represents the current item within a container or set of related elements.
+
+Description
+
+When you have a group of related elements, such as several links in a breadcrumb or steps in a multi-step flow, with one element in the group styled differently from the others to indicate to the sighted user that this is the current element within its group, the aria-current should be used to inform the assistive technology user what has been indicated via styling.
+In a breadcrumb list, when a link within a set of pagination links is styled to indicate the user is currently on that page, aria-current="page" should be set on that link. In a multi step based process with a step indicator such as a multi-page survey or a multi step checkout or registration process, when the current step icon is visually different to represent that it is the current step, that icon's container should have aria-current="step" for assistive technology users who may not be able to "see" the visual difference.
+The aria-current attribute indicates the element on which it is set, to a value other than false, represents the current item within a container or set of related elements. Only mark one element in a set of elements as current with aria-current.
+The aria-current attribute accepts a limited list of values including page, step, location, date, time, true, and false. Any non-null string value not included in this list of enumerated values is treated as if aria-current="true" were set, not the default false value. If the attribute is not present, is an empty string, is present with no value, or is set to aria-current="false" it is not exposed to the user.
+When something is selected rather than current, such as a tab in a tablist, use aria-selected to indicate the currently-displayed tabpanel.
+Note: Don't use aria-current as a substitute for aria-selected in gridcell, option, row or tab.
+Example
+
+The breadcrumb for the "current page" should have aria-current="page" set on it.
+HTML
+Copy to Clipboard
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    <li>
+      <a href="../../../../../">Web technology for developers</a>
+    </li>
+    <li>
+      <a href="../../../../">Accessibility</a>
+    </li>
+    <li>
+      <a href="../../../">ARIA</a>
+    </li>
+    <li>
+      <a href="../../">ARIA States and Properties</a>
+    </li>
+    <li>
+      <a href="./" aria-current="page">ARIA: `aria-current` attribute</a>
+    </li>
+  </ol>
+</nav>
+
+
+If the element representing the current page in the breadcrumb was not a link, the aria-current is optional.
+Values
+page
+
+Represents the current page within a set of pages such as the link to the current document in a breadcrumb.
+step
+
+Represents the current step within a process such as the current step in an enumerated multi step checkout flow.
+location
+
+Represents the current location within an environment or context such as the image that is visually highlighted as the current component of a flow chart.
+date
+
+Represents the current date within a collection of dates such as the current date within a calendar.
+time
+
+Represents the current time within a set of times such as the current time within a timetable.
+true
+
+Represents the current item within a set.
+false (default)
+
+Does not represent the current item within a set.
+Associated interfaces
+Element.ariaCurrent
+
+The ariaCurrent property, part of the Element interface, reflects the value of the aria-current attribute.
+ElementInternals.ariaCurrent
+
+The ariaCurrent property of the ElementInternals interface reflects the value of the aria-current attribute.
+Associated roles
+
+Usable in all roles; except for elements with the role of gridcell, option, row and tab where aria-selected should be used
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-describedby
+
+The global aria-describedby attribute identifies the element (or elements) that describes the element on which the attribute is set.
+
+Description
+
+The aria-describedby attribute lists the ids of the elements that describe the object. It is used to establish a relationship between widgets or groups and the text that describes them.
+The aria-describedby attribute is not limited to form controls. It can also be used to associate static text with widgets, groups of elements, regions that have a heading, definitions, and more. The aria-describedby attribute can be used with semantic HTML elements and with elements that have an ARIA role.
+The aria-describedby attribute is very similar to the aria-labelledby attribute. While aria-labelledby lists the ids of the labels or elements that describe the essence of an object, aria-describedby lists the ids of the descriptions or elements providing more information that the user might need. Both aria-labelledby and aria-describedby reference other elements to calculate a text alternative, but a label should be concise, while a description is intended to provide more verbose information; a label describes the essence of an object, while a description provides more information that the user might need.
+The elements linked via aria-describedby don't need to be visible. It is possible to reference an element even if that element is hidden. For example, a form control can have a description that is hidden by default and revealed on request using a disclosure widget like a "more information" icon. The sighted users click on the icon to view the description, while assistive technology users can immediately access it as the description is referenced from that form control with aria-describedby.
+The aria-describedby property is appropriate when the associated content contains plain text. If the content is extensive, contains useful semantics, or has a complex structure requiring user navigation, use aria-details instead. aria-details allows assistive technology users to visit the associated structured content and provides additional navigation commands, making it easier to understand the structure, or to experience the information in smaller pieces.
+Note: The aria-describedby content should only be a text string. If there are important underlying semantics in the content, consider using aria-details.
+Example
+HTML
+Copy to Clipboard
+<button aria-describedby="trash-desc">Move to trash</button>
+…
+<p id="trash-desc">
+  Items in the trash will be permanently removed after 30 days.
+</p>
+
+
+Note: The aria-describedby attribute is not designed to reference descriptions from external resources. As its value is one or more ids (space-separated if multiple), it must reference elements in the same DOM document.
+Values
+ID reference list
+
+The id or space-separated list of element ids that describe the current element.
+Associated roles
+
+Used in all roles. Usable in all HTML elements as well.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-description
+
+The global aria-description attribute defines a string value that describes or annotates the current element.
+
+Note: aria-description is still in W3C Editor's Draft for ARIA 1.3. For the time being, continue to use aria-describedby, which has been supported since ARIA 1.1.
+
+Description
+
+The global aria-description attribute provides a mechanism for the developer to describe or annotate the current element providing greater context for assistive technology users.
+HTML
+Copy to Clipboard
+<div
+  role="application"
+  aria-label="calendar"
+  aria-description="Game schedule for the Boston Red Sox 2021 Season">
+  <h1>Red Sox 2021</h1>
+  <div role="grid">…</div>
+</div>
+
+
+The aria-description attribute is similar to aria-label in that both provide a text string to associate with the element, but a label should be short and concise, while the description can be longer as it is intended to provide more context and information.
+The aria-description and aria-describedby properties have the same purpose; both provide the user with additional descriptive text for the object on which it is set. If descriptive text is available in the DOM, use aria-describedby instead.
+The aria-description property should only be used when providing a visible description is not the desired user experience. The aria-describedby attribute takes as its value a list of ids of the elements that contain descriptive text about the object. The aria-description is used when there is no appropriate descriptive text that can be associated with the object by id reference. If both attributes are present, aria-describedby takes precedence in defining the accessible description property.
+The content of the description, whether set by aria-description or aria-describedby, should be flat text. If the content is very long, has semantic meaning requirements, or has a navigational structure, use aria-details instead.
+Values
+<string>
+
+The value is a string, an unconstrained value type, that is intended to be conveyed to the assistive technology user.
+Associated interfaces
+Element.ariaDescription
+
+The ariaDescription property, part of the Element interface, reflects the value of the aria-description attribute, which defines a string value that describes or annotates the current element.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-details
+
+The global aria-details attribute identifies the element (or elements) that provide additional information related to the object.
+
+Description
+
+The aria-details attribute can be used to provide additional information or complex descriptions to an object. It is used to inform assistive technology users about the content by providing more in-depth information, whether that content is within the current document or a link to additional assets.
+There are other HTML and WAI-ARIA properties that have similar purposes. The HTML <label> element and the aria-label and aria-labelledby properties are used to provide short labels for an object. The HTML title attribute and the aria-description and aria-describedby properties provide for longer plain text descriptions of an object. However, when additional information, complex descriptions, or navigable content related to the object is necessary and available, the aria-details attribute should be used.
+The aria-details attribute serves a similar purpose as HTML's never fully-supported longdesc attribute － a URL of a long description to a replaced element's content － which was deprecated due to lack of support and misuse.
+The aria-details attribute takes the id, or space separated list of ids of the elements to get more detailed information as its values. When aria-details is included on an element, assistive technologies inform users of the availability of extended information, enabling the user to navigate to the referenced content.
+Elements referenced by aria-details are intended to contain more information than would normally be provided via aria-describedby.
+The elements referenced by aria-details should be visible to all users. aria-details informs users that otherwise might not be able to scan a screen and discern quickly that the explanatory content is available.
+Note: aria-details has no impact on the accessible description.
+Unlike aria-describedby, elements referenced by aria-details are not used in accessible descriptions and are not turned into a plain string when presented to assistive technology users. If the associated content is not too long and flattening the contents of the referenced element to a simple string of text wouldn't cause loss of information, consider using aria-describedby instead. That said, it is valid for an element to have both aria-details and a description specified with either aria-describedby or aria-description.
+Example
+
+When it comes to definition and term roles, the aria-details would be included on the term element with the id of the element with a definition role.
+HTML
+Copy to Clipboard
+<p>The <strong>cubic-bezier()<strong> functional notation defines a cubic
+  <span role="term" aria-details="bezier bezImg">Bézier curve</span>. As
+  these curves are continuous, they are often used to smooth down the start and
+  end of the curve and are therefore sometimes called easing functions.
+</p>
+
+<p role="definition" id="bezier">A <strong>Bézier curve</strong>,
+ (Pronounced \ ˈbe-zē-ˌā \)
+ <i aria-description="English pronunciation">BEH-zee-ay</i>) is a mathematically
+ described curve used in computer graphics and animation. The curve is defined
+ by a set of control points with a minimum of two. Web related graphics
+ and animations use Cubic Béziers, which are curves with four control
+ points P<sub>0</sub>, P<sub>1</sub>, P<sub>2</sub>, and P<sub>3</sub>.
+</p>
+
+<a href="bezierExplanation.html" id="bezImg"
+  aria-label="Explanation of Bézier curve in CSS easing functions">
+  <img alt="Animated Bézier curve showing 4 control points." src="bezier.gif">
+</a>
+
+Values
+ID reference list
+
+An id or space separated list of ids of elements that provide or link to additional related information.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-disabled
+
+The aria-disabled state indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
+
+Description
+
+The aria-disabled attribute, when set to true, indicates that the element upon which it is set and all of its focusable descendants are meant to be in the disabled state. This declaration will inform people using assistive technologies, such as screen readers, that such elements are not meant to be editable or otherwise operable.
+Unlike HTML's disabled Boolean attribute, which will communicate a form control as semantically being disabled, change its styling to reflect its state and suppress all functionality along with disallowing the element's value from participating in form submission, the aria-disabled="true" only semantically exposes these elements as being disabled. Web developers must manually ensure such elements have their functionality suppressed when exposed to the disabled state.
+When needing to disable native HTML form controls, developers will need to specify the disabled attribute, as it provides all of the generally expected features of disabling a control by default. However, there can be instances where elements need to be exposed as disabled, but are still available for users to find when navigating via the Tab key. Doing so can improve their discoverability as they will not be removed from the focus order of the web page, as aria-disabled does not change the focusability of such elements, nor will the elements be dimmed by default browser styling, making them easier to read. Some examples of where this may be useful include:
+
+The header button element associated with non-collapsible accordion panel,
+A button which is important to keep in the page's focus order, but its action is presently unavailable - such as submitting a form,
+Temporarily inactive items in a menu widget that would otherwise be skipped over via standard keyboard navigation.
+In each of these cases, one may want users to find these elements through standard keyboard navigation, though the functionality of that control is removed or "disabled". Developers will still need to use JavaScript to fully disable the functionality of the element while also changing the appearance of the element so sighted users know it is disabled.
+Note: The state of being disabled applies to the element with aria-disabled="true" and all of its focusable descendants. Take care when using this attribute on container elements. Particularly in the case where a container may have both form controls and links - where the intent may be to expose the form controls as being in the disabled state, but not to communicate the links as being "disabled".
+Another reason to use the aria-disabled attribute over the HTML disabled attribute is if you have created custom controls which need to be marked as disabled, but are not using an element that allows for the disabled attribute. For instance, in the following snippet a <div> was used to create a custom button which needs to be marked as disabled. However, the <div> element does not expect, nor respect the disabled attribute - even if it were to be given a role="button" to change its exposed ARIA role. The aria-disabled attribute is required to disable such custom controls.
+HTML
+Copy to Clipboard
+<div role="button" aria-disabled="true" tabindex="-1">Edit</div>
+
+
+Similarly to needing to use JavaScript to ensure an element with aria-disabled="true" is not functional, the element will also need styling adjustments. In contrast to the HTML disabled attribute, where specifying it provides :disabled user-agent styles to be applied, adding aria-disabled="true" doesn't. The element can be styled with the attribute selector [aria-disabled="true"].
+CSS
+Copy to Clipboard
+[aria-disabled="true"] {
+  opacity: 0.5;
+}
+
+
+If you are purposefully using the aria-disabled attribute to allow for a form control to remain in the page's keyboard focus order, particularly if the element represents important content that all users should be able to perceive, then you may need to use styling that still passes color contrast requirements. For instance, a disabled button/heading that introduces a non-collapsible accordion panel is content that still needs to be legible.
+CSS
+Copy to Clipboard
+@media (forced-colors: active) {
+  [aria-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}
+
+
+The forced-colors media query detects if the user agent has enabled a forced colors mode; if so, the text and border colors are both set to the system color greyText.
+Another thing to keep in mind, when using aria-disabled over the native HTML attribute, is that the ARIA attribute will require the manual styling necessary to visually communicate the element as disabled in Windows High Contrast Mode.
+Note: If you are using CSS's pointer-events: none; to make an element non-clickable, make sure you disable interactivity with JavaScript as well. pointer-events: none; prevents mouse clicks, but does not prevent the element from being activated via the keyboard.
+JS
+Copy to Clipboard
+function onClick(event) {
+  event.preventDefault();
+}
+
+function toggleDisabled(element, status, update) {
+  if (status) {
+    //element.input.disabled = false;
+    element.setAttribute("aria-disabled", "false");
+    update.textContent = "The element is now enabled.";
+    element.addEventListener("click", onClick);
+  } else {
+    //element.input.disabled = true;
+    element.setAttribute("aria-disabled", "true");
+    update.textContent = "The element is now disabled.";
+    element.removeEventListener("click", onClick);
+  }
+}
+
+
+When toggling from aria-disabled="true" to "false", use JavaScript to:
+
+Toggle the value to false (or remove the attribute entirely),
+Enable the element, and
+Let the user know the control is now enabled.
+If you used just CSS to style the disabled state using an attribute selector, the selector will no longer match and the disabled styling will no longer be in effect.
+Values
+true
+
+The element is disabled
+
+false
+
+The element is not disabled
+
+Associated interfaces
+Element.ariaDisabled
+
+The ariaDisabled property, part of the Element interface, reflects the value of the aria-disabled attribute, which indicates that the element is perceivable but disabled, so it is not editable or otherwise operable.
+ElementInternals.ariaDisabled
+
+The ariaDisabled property of the ElementInternals interface reflects the value of the aria-disabled attribute.
+Associated roles
+
+Used in roles:
+
+application
+button
+composite
+gridcell
+group
+input
+link
+menuitem
+scrollbar
+separator
+tab
+
+Inherits into roles:
+
+checkbox
+columnheader
+combobox
+grid
+listbox
+menu
+menubar
+menuitemcheckbox
+menuitemradio
+option
+radio
+radiogroup
+row
+rowheader
+searchbox
+select
+slider
+spinbutton
+switch
+tablist
+textbox
+toolbar
+tree
+treegrid
+treeitem
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-dropeffect
+
+The global aria-dropeffect attribute indicates what functions may be performed when a dragged object is released on the drop target. 
+Deprecated
+
+Description
+
+Deprecated in ARIA 1.1, the aria-dropeffect property indicates what functions may be performed when a dragged object is released on the drop target. The global aria-dropeffect attribute provides assistive technology users the same information provided via the DataTransfer.dropEffect to sited users via the dropeffect icon.
+Text selections, images, and links can be dragged by default. Setting the global draggable="true" attribute, part of HTML5's Drag and Drop API, with a dragstart event handler, means any DOM node can be made draggable as well.
+When a drag event occurs, a translucent image is generated of the dragged element which follows the user's pointer during the drag. The default image can be changed to any image with setDragImage. Along with the default image identifying the element being dragged, there is a dataTransfer.dropEffect property that can be used to control the visual feedback the user is given during a drag-and-drop operation. The aria-dropeffect property should be used to provide assistive technology users the same feedback provided to sited users via dataTransfer.dropEffect property.
+dropeffect defines which cursor the browser displays while dragging, and is set on the element on which the element may be dropped. During the drag operation, as the draggable element is dragged over different drop areas, the drag effects—both the dataTransfer.dropeffect and the aria-dropeffect should be modified to indicate the type of operation that will occur if the dragged element is released.
+More than one drop effect may be supported for a given element. Therefore, the value of the aria-dropeffect attribute is a space separated list of functions. Functions include copy, execute, link, and move. The default is none, meaning there is no supported functionality in the application. Setting aria-dropeffect="popup" informs assistive technology users that there is a popup menu or dialog of drag operations from which the user can choose.
+Including the attribute provides assistive technologies the ability to convey the possible drag options available to the assistive technology user, but doesn't add any actual functionality.
+The aria-dropeffect property is expected to be replaced by a new feature in a future version of WAI-ARIA and is considered deprecated.
+Typically, drop effect functions can only be provided once an object has been grabbed for a drag operation, as the drop effect functions available are dependent on the object being dragged. Therefore, you'll generally add aria-dropeffect to all the potential drop targets when the dragstart event is fired.
+Values
+
+The value is a space separated list of possible actions. The following are the valid tokens:
+
+copy
+
+A duplicate of the source object will be dropped into the target.
+execute
+
+A function supported by the drop target is executed, using the drag source as an input.
+link
+
+A reference or shortcut to the dragged object will be created in the target object.
+move
+
+The source object will be removed from its current location and dropped into the target.
+none (default)
+
+No operation can be performed; effectively cancels the drag operation if an attempt is made to drop on this object. Ignored if combined with any other token value; for example, 'none copy' is equivalent to a 'copy' value.
+popup
+
+There is a popup menu or dialog that allows the user to choose one of the drag operations (copy, move, link, execute) and any other drag functionality, such as cancel.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-errormessage
+
+The aria-errormessage attribute on an object identifies the element that provides an error message for that object.
+
+Description
+
+When there is a user-created error, you want to let them know it exists and tell them how to fix it. There are two attributes you need to use: set aria-invalid="true" to define the object as being in an error state, then add the aria-errormessage attribute with the value being the id of the element containing the error message text for that object.
+The aria-errormessage attribute should only be used when the value of an object is not valid; when aria-invalid is set to true. If the object is valid and you include the aria-errormessage attribute, make sure the element referenced is hidden, as the message it contains is not relevant.
+When aria-errormessage is relevant, the element it references must be visible so users can see or hear the error message.
+Often times, you will want the element with the error message to be an ARIA live region, such as when an error message is displayed to users after they have provided an invalid value. The error message should describe what is wrong and inform the user what is required to make the object valid. Adding the error message as an ARIA live region informs assistive technologies that the user may benefit from the error message content even if the error message wouldn't otherwise be conveyed to the user.
+Include a visible error message and link the invalid object with the aria-errormessage attribute if the failure is visually apparent and an explicit description of the error is necessary.
+Example
+
+We create some styles to:
+
+Hide all error messages,
+Make invalid objects appear invalid, and
+Show error messages that are siblings coming after an invalid object.
+We use aria-invalid="true" to identify invalid objects:
+
+CSS
+Copy to Clipboard
+.errormessage {
+  visibility: hidden;
+}
+
+[aria-invalid="true"] {
+  outline: 2px solid red;
+}
+
+[aria-invalid="true"] ~ .errormessage {
+  visibility: visible;
+}
+
+
+When an object is invalid, we use JavaScript to add aria-invalid="true". The above CSS makes the .errormessage following an invalid object become visible.
+HTML
+Copy to Clipboard
+<p>
+  <label for="email">Email address:</label>
+  <input
+    type="email"
+    name="email"
+    id="email"
+    aria-invalid="true"
+    aria-errormessage="err1" />
+  <span id="err1" class="errormessage">Error: Enter a valid email address</span>
+</p>
+
+
+When we went from valid to invalid, the only JavaScript change for this example was an update to aria-invalid on the email input object. As the error message follows the input and becomes visible and available on the accessibility tree, we are able to keep our example simple. We could have also applied an aria-live property or used a live region roles such as alert.
+Values
+id reference
+
+The value of the id of the element containing the error message for the current element
+
+Associated roles
+
+Used in roles:
+
+application
+checkbox
+combobox
+gridcell
+listbox
+radiogroup
+slider
+spinbutton
+textbox
+tree
+
+Inherits from roles:
+
+columnheader
+rowheader
+searchbox
+switch
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-expanded
+
+The aria-expanded attribute is set on an element to indicate if a control is expanded or collapsed, and whether or not the controlled elements are displayed or hidden.
+
+Description
+
+There are several widgets that can be expanded and collapsed, including menus, dialogs, and accordion panels. Each of these objects, in turn, has an interactive element that controls their opening and closing. The aria-expanded attribute is applied to this focusable, interactive control that toggles the visibility of the object.
+For example, aria-expanded is applied to the parent item in a DOM tree to indicate whether its child branch is shown. The parent controls the visibility of the associated child branch, as well.
+There are two declarations that can be applied to objects that control the visibility of another object: aria-controls, or aria-owns combined with aria-expanded. The aria-controls and aria-owns indicate the relationship between the controlling element and the controlled element. The aria-expanded indicates to assistive technology whether the controlled element is expanded or collapsed.
+Use the aria-owns property on the elements that own expandable grouping containers. If the expandable and collapsible grouping container is not owned by the element that has the aria-expanded attribute, use the aria-controls property to reference the grouping container instead.
+Buttons
+
+A button that toggles a widget should have aria-controls set to the id of the toggled widget and aria-expanded set to the current state of the widget.
+HTML
+Copy to Clipboard
+<button aria-expanded="false" aria-controls="widget1">Toggle widget</button>
+
+
+When the widget is visible, the controlling object relays that information via having aria-expanded="true" set on it. The accessible name of the controlling object should reflect this change.
+HTML
+Copy to Clipboard
+<button aria-expanded="true" aria-controls="widget1">Toggle widget</button>
+
+Menu
+
+When a menu is displayed, the button object that toggles the visibility of that menu has aria-expanded="true" set. When the menu is hidden, aria-expanded can be omitted. If specified when the menu is hidden, it should be set as aria-expanded="false". When a child menu is not visible, its parent menuitem has aria-expanded. It should be set to true when the child menu is visible.
+Combobox
+
+By default, some roles are hidden or collapsed and other roles are open or expanded by default. Elements with role combobox have a default value for aria-expanded of false. When a combobox popup is not visible, the element with role combobox has aria-expanded set to false. This is the default state. When the popup element is visible, aria-expanded should be set to true.
+HTML
+Copy to Clipboard
+<label for="username">Username</label>
+<input id="username" name="username" aria-describedby="username-desc" />
+<button
+  aria-expanded="false"
+  aria-controls="username-desc"
+  aria-label="Help about username"
+  type="button">
+  <span aria-hidden="true">?</span>
+</button>
+<p id="username-desc" hidden>
+  Your username is the name that you use to log in to this service.
+</p>
+
+
+Note: The presence of the aria-expanded attribute indicates control. Avoid including it on elements that do not control the expanded state of other elements.
+Treeitems
+
+Each element with role treeitem that serves as a parent node has aria-expanded="false" when the node is in a closed state and aria-expanded="true" when the node is in an open state. End nodes, nodes with no descendant nodes, should not have the aria-expanded attribute because, if they were to have it, they would be incorrectly described to assistive technologies as parent nodes.
+Rows
+
+A parent row in a treegrid is a row that can be expanded or collapsed to show or hide a set of child rows in a table or grid. Each parent row has the aria-expanded state set on either the row element or on a cell contained in the row. When the child rows are hidden, aria-expanded="false" is set. aria-expanded="true" is set when the child rows are displayed. Rows that do not control the display of child rows should not include the aria-expanded attribute at all because including the attribute defines the rows as parent rows.
+Values
+false
+
+The grouping element this element owns or controls is collapsed.
+true
+
+The grouping element this element owns or controls is expanded.
+undefined (default)
+
+The element does not own or control a grouping element that is expandable.
+Associated interfaces
+Element.ariaExpanded
+
+The ariaExpanded property, part of the Element interface, reflects the value of the aria-expanded attribute.
+ElementInternals.ariaExpanded
+
+The ariaExpanded property, part of the ElementInternals interface, reflects the value of the aria-expanded attribute.
+Associated roles
+
+Used in roles:
+
+application
+button
+checkbox
+combobox
+gridcell
+link
+listbox
+menuitem
+row
+rowheader
+tab
+treeitem
+
+Inherits into roles:
+
+columnheader
+menuitemcheckbox
+menuitemradio
+rowheader
+switch
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-flowto
+
+The global aria-flowto attribute identifies the next element (or elements) in an alternate reading order of content. This allows assistive technology to override the general default of reading in document source order at the user's discretion.
+
+Description
+
+Web pages should be sequentially navigable. For this reason, developers are dissuaded from using the global tabindex attribute which can change tab order and the CSS order property, which can change visual order from the DOM order. However, in rare circumstances a reading path different from the source order is required. For such cases, the aria-flowto attribute can make the content more accessible for users of assistive technologies.
+The global aria-flowto attribute lets the author indicate to assistive technology users which element or elements might want to be focused on next, providing an alternate reading order to the source order. This allows assistive technology to read a document in an order other than the default document source reading order.
+When aria-flowto has a single id reference, it allows assistive technologies to, at the user's request, go to the element targeted via that id instead of reading the document in the order of the DOM. When the aria-flowto value uses a space separated list of multiple id references, assistive technology can provide the user with a list of path choices, with each id referenced being a choice. The path choice names are determined by the accessible name of each target element of the aria-flowto attribute.
+Note: Setting aria-flowto does not impact the content's tab order. It only provides users the option to follow a content path that doesn't match the DOM order when using tech that supports this attribute.
+Values
+id
+
+Suggested next element in the reading order.
+id list
+
+Space separated list of ID values referencing the suggested elements the user may want to go to next in the alternate reading order of content.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-grabbed
+
+The aria-grabbed state indicates an element's "grabbed" state in a drag-and-drop operation. 
+Deprecated
+
+Description
+
+Text selections, images, and links can be dragged by default. Setting the global draggable="true" attribute, part of HTML5's Drag and Drop API, with a dragstart event handler, means any DOM node can be made draggable as well.
+The aria-grabbed attribute was used to indicate if an element is in a "grabbed" state in a drag-and-drop operation with aria-grabbed="true" or if that the element is grabbable, but not currently grabbed with aria-grabbed="false".
+Setting aria-grabbed="true" indicated the element had been selected for dragging. Setting aria-grabbed="false" indicated that the element could be grabbed for a drag-and-drop operation, but is not currently grabbed.
+When aria-grabbed is set to true, the aria-dropeffect attribute of all potential drop targets should be updated with the type of function, or effect, will occur to the grabbed element when it is dropped. When no element is in a grabbed state, revert the aria-dropeffect attributes of all your drop targets.
+The aria-grabbed property is expected to be replaced by a new feature in a future version of WAI-ARIA and is considered deprecated.
+Note: ARIA does not enable accessible functionality. ARIA only conveys the intended behavior of your functionality.
+Values
+true
+
+The element has been selected for dragging.
+false
+
+The element is not currently selected for dragging, but can be made available for dragging by setting the property to true.
+undefined (default)
+
+The element does not support being dragged
+
+Associated roles
+
+Used in ALL roles
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-haspopup
+
+The aria-haspopup attribute indicates the availability and type of interactive popup element that can be triggered by the element on which the attribute is set.
+
+Description
+
+In ARIA, interactive menus, listboxes, trees, grids, and dialogs that appear on top of other content when triggered to appear are considered "popups". These popups are triggered by one or more interactive elements on the page. The availability and type of popup the interactive element will trigger should be identified with the aria-haspopup state.
+The presence of the aria-haspopup, with one of six enumerated values - menu, listbox, tree, grid, dialog, or true - indicates the element can trigger a popup and what kind of popup will be displayed. In turn, the element that pops up must be of the role indicated. The value true is the same as menu. Any other value, including an empty string or other role, is treated as if false were set.
+A tooltip is not considered to be a popup in this context, as it is not interactive.
+Note: Make sure the role of the element that serves as the container for the popup content is a menu, listbox, tree, grid or dialog and that the value of aria-haspopup matches the role of the popup container.
+The aria-haspopup state informs assistive technology users that there is a popup and the type of popup it is, but provides no interactivity. For the popup to be keyboard accessible, make sure the element with aria-haspopup is focusable and can trigger the popup, that there is a keyboard mechanism for opening the popup, and that the popup element manages focus of all its descendants.
+Note: ARIA does not enable accessible functionality. ARIA only conveys the intended behavior of your functionality.
+When creating a menubar, a parent menuitem should have aria-haspopup="menu" (or true) set. Any button that open a menu should have a role of button or, preferably, be a <button>, and also have aria-haspopup="menu" (or true) set. Tab elements with popup menus should also have aria-haspopup="menu" set. Note that menubars should not be used to create website navigation.
+Note: Elements with role combobox have an implicit aria-haspopup value of listbox.
+Values
+false (default)
+
+The element does not have a popup.
+true
+
+The popup is a menu.
+menu
+
+The popup is a menu.
+listbox
+
+The popup is a listbox.
+tree
+
+The popup is a tree.
+grid
+
+The popup is a grid.
+dialog
+
+The popup is a dialog.
+Associated interfaces
+Element.ariaHasPopup
+
+The ariaHasPopup property, part of the Element interface, reflects the value of the aria-haspopup attribute, which indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.
+ElementInternals.ariaHasPopup
+
+The ariaHasPopup property of the ElementInternals interface reflects the value of the aria-haspopup attribute.
+Associated roles
+
+Used in roles:
+
+application
+button
+combobox
+gridcell
+link
+menuitem
+slider
+tab
+textbox
+treeitem
+
+Inherited into roles:
+
+columnheader
+menuitemcheckbox
+menuitemradio
+rowheader
+searchbox
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-hidden
+
+The aria-hidden state indicates whether the element is exposed to an accessibility API.
+
+Description
+
+The aria-hidden attribute can be used to hide non-interactive content from the accessibility API.
+Adding aria-hidden="true" to an element removes that element and all of its children from the accessibility tree. This can improve the experience for assistive technology users by hiding:
+
+Purely decorative content, such as icons or images
+Duplicated content, such as repeated text
+Offscreen or collapsed content, such as menus
+
+The presence of the aria-hidden attribute hides content from assistive technology but doesn't visually hide anything.
+aria-hidden="true" should not be used on elements that can receive focus. Additionally, since this attribute is inherited by an element's children, it should not be added onto the parent or ancestor of a focusable element.
+Warning: Do not use aria-hidden="true" on focusable elements.
+An element's hidden status is based on whether it is rendered. Rendering is usually controlled by CSS. For example, an element whose display property is set to none via CSS is not rendered. An element is considered hidden if it, or any of its ancestors are not rendered or have their aria-hidden attribute value set to true. Note that an element and its children that has aria-hidden="true" declared on it will still be visible, unless also hidden by CSS.
+Use caution when using aria-hidden to hide visibly rendered content from assistive technologies. You should not be hiding visible content unless doing so improves the experience for users of assistive technologies by removing redundant or extraneous content. Only when identical or equivalent meaning and functionality is exposed to assistive technologies can removing visible content from the accessibility API be considered.
+Note: Consider all disabilities when hiding visibly rendered content from assistive technologies. Not all users of assistive technology are visually impaired. If visible content doesn't match text content in the accessibility API, the user experience will be negatively impacted for sighted users.
+On the surface, the aria-hidden="true" and the role="presentation" and its synonym role="none" seem similar, but the intent behind each is different.
+aria-hidden="true" will remove the entire element from the accessibility API.
+role="presentation" and role="none" will remove the semantic meaning of an element while still exposing it and its content to assistive technology.
+aria-hidden="true" should not be added when:
+
+The HTML hidden attribute is present
+The element or the element's ancestor is hidden with display: none
+The element or the element's ancestor is hidden with visibility: hidden
+
+In all three scenarios, the attribute is unnecessary to add because the element has already been removed from the accessibility tree. Visually hiding elements with display or visibility hides content from the screen and from assistive technologies.
+Using aria-hidden="false" will not re-expose the element to assistive technology if any of its parents specify aria-hidden="true".
+Example
+
+Adding aria-hidden="true" to the icon hides the icon character from being included in the accessible name.
+HTML
+Copy to Clipboard
+<button>
+  <span class="fa fa-tweet" aria-hidden="true"></span>
+  <span class="label"> Tweet </span>
+</button>
+
+
+We have a button with a Font Awesome icon. We hide the icon from assistive technologies with aria-hidden="true", as exposing the icon to assistive technologies could lead to redundancy or, if the icon doesn't have the same content as the visible text, confusion.
+Values
+false
+
+The element is exposed to the accessibility API as if it was rendered.
+true
+
+The element is hidden from the accessibility API.
+undefined (default)
+
+The element's hidden state is determined by the user agent based on whether it is rendered.
+Associated interfaces
+Element.ariaHidden
+
+The ariaHidden property, part of the Element interface, reflects the value of the aria-hidden attribute, which Indicates whether the element is exposed to an accessibility API.
+ElementInternals.ariaHidden
+
+The ariaHidden property, part of the ElementInternals interface, reflects the value of the aria-hidden attribute
+
+Associated roles
+
+Used in ALL roles
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-invalid
+
+The aria-invalid state indicates the entered value does not conform to the format expected by the application.
+
+Description
+
+The aria-invalid attribute is used to indicate that the value entered into an input field is not in a format or a value the application will accept. This may include formats such as email addresses or telephone numbers. aria-invalid can also be used to indicate that a required field is empty.
+The aria-invalid attribute can be used with any typical HTML form element, and is not limited to elements that have an ARIA role assigned.
+The attribute should be set with JavaScript as a result of a validation process. If a value is determined to be invalid or out-of-range, set aria-invalid="true" and tell the user there is an error. For better user experience, provide suggestions for how the error can be corrected. Do not set aria-invalid="true" on empty required elements until after the user attempts to submit the form. They may still be working on filling it out.
+Note: When aria-invalid is used in conjunction with the aria-required attribute, aria-invalid should not be set to true before the form is submitted - only in response to validation.
+There are currently four values: in addition to true and false we have grammar which can be used when a grammatical error is detected and spelling for spelling errors. If the attribute is not present, or its value is false, or its value is an empty string, the default value of false applies. Any other value is treated as if true were set.
+Native HTML validation
+
+HTML has native form validation. When a user submits a form with a control containing errors, the first form control with an invalid value displays an error message, natively.
+If there is a required attribute on a form control that isn't filled out, the form will not submit, and an error message appears reading "Please fill out this field" or something similar. The messaging for native validation varies depending on the browser, and cannot be styled.
+HTML
+Copy to Clipboard
+<input type="number" step="2" min="0" max="100" required />
+
+
+If the user had entered a value in the preceding input example above the maximum, below the minimum, or that doesn't match the step value, an error message would appear. If the user had entered "3", the native error message would be similar to "Please enter a valid value."
+
+If you are creating your own form validation scripts, make sure to include aria-invalid on invalid form controls, along with styling (use the [aria-invalid="true"] attribute selector) and messaging (with aria-errormessage) to help users understand where the mistake is and how they can fix it.
+Values
+grammar
+
+A grammatical error was detected.
+false (default)
+
+There are no detected errors in the value.
+spelling
+
+A spelling error was detected.
+true
+
+The value entered by the user has failed validation.
+Any value not in this list will be treated as true.
+Example
+
+The following snippet shows a simplified version of two form fields with a validation function attached to the blur event. Note that since the default value for aria-invalid is false, it is not strictly necessary to add the attribute to input.
+HTML
+Copy to Clipboard
+<ul>
+  <li>
+    <label for="name">Full Name</label>
+    <input
+      type="text"
+      name="name"
+      id="name"
+      aria-required="true"
+      aria-invalid="false"
+      onblur="checkValidity('name', ' ', 'Invalid name entered (requires both first and last name)');" />
+  </li>
+  <li>
+    <label for="email">Email Address</label>
+    <input
+      type="email"
+      name="email"
+      id="email"
+      aria-required="true"
+      aria-invalid="false"
+      onblur="checkValidity('email', '@', 'Invalid email address');" />
+  </li>
+</ul>
+
+
+Note that it is not necessary to validate the fields immediately on blur; the application could wait until the form is submitted (though this is not necessarily recommended).
+The snippet below shows a very simple validation function, which only checks for the presence of a particular character (in the real world, validation will likely be more sophisticated):
+
+JS
+Copy to Clipboard
+function checkValidity(id, searchTerm, msg) {
+  const elem = document.getElementById(id);
+  if (elem.value.includes(searchTerm)) {
+    elem.setAttribute("aria-invalid", "false");
+    updateAlert();
+  } else {
+    elem.setAttribute("aria-invalid", "true");
+    updateAlert(msg);
+  }
+}
+
+
+The snippet below shows the alert functions, which add (or remove) the error message:
+
+JS
+Copy to Clipboard
+function updateAlert(msg) {
+  const oldAlert = document.getElementById("alert");
+  if (oldAlert) {
+    oldAlert.remove();
+  }
+
+  if (msg) {
+    const newAlert = document.createElement("div");
+    newAlert.setAttribute("role", "alert");
+    newAlert.setAttribute("id", "alert");
+    const content = document.createTextNode(msg);
+    newAlert.appendChild(content);
+    document.body.appendChild(newAlert);
+  }
+}
+
+
+Note that the alert has the ARIA role attribute set to alert.
+Associated roles
+
+Used in roles:
+
+application
+checkbox
+combobox
+gridcell
+listbox
+radiogroup
+slider
+spinbutton
+textbox
+tree
+
+Inherited into role:
+
+columnheader
+rowheader
+searchbox
+switch
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-keyshortcuts
+
+The global aria-keyshortcuts attribute indicates keyboard shortcuts that an author has implemented to activate or give focus to an element.
+
+Description
+
+A keyboard shortcut is a series of one or several keys that tells software to perform a pre-programmed action. Keyboard shortcuts enable keyboard users to invoke commands using the keyboard that would otherwise require accessing a menu or using touch or a mouse. The aria-keyshortcuts property defines the keyboard keys that have been implemented to activate or give focus to the element on which the attribute is set.
+The aria-keyshortcuts attribute exposes the existence of the shortcut to assistive technologies so the presence of the shortcut can be communicated to its users. Like all ARIA attributes, it has no effect on the functionality of the page; the keyboard behavior must be added via JavaScript event handlers.
+Keyboard shortcuts applied to disabled elements should also be disabled. For example, when disabling an element for mouse users, remember to disable it for keyboard shortcut users.
+Ensure all keyboard shortcuts are both visible to sighted users and made available to assistive technology. If your application is complex enough to need keyboard shortcuts, also known as "hot keys", include a guided tour of your application, an accessibility page documenting shortcuts and other accessibility features, a shortcut cheat sheet page or dialog pop up, or other method of making the availability of keyboard short cuts known. In addition, show the shortcut in menus and tooltips.
+Property value rules
+
+The value of the aria-keyshortcuts attribute is a space-separated list of key combinations that can be pressed to activate a command or textbox widget. Each key combination includes zero, one or more modifier keys followed by exactly one non-modifier key to be pressed at the same time joined with a plus sign ("+"). The attribute value is case-insensitive.
+Examples of valid keyboard shortcuts include:
+
+aria-keyshortcuts="A"
+aria-keyshortcuts="Shift+Space"
+aria-keyshortcuts="Control+Alt+."
+aria-keyshortcuts="Control+Shift+&#39;"
+aria-keyshortcuts="alt+shift+p control+f"
+aria-keyshortcuts="Meta+C Meta+Shift+C"
+
+
+Modifier keys are keys that don't have any impact when used on their own. They are written as "Alt", "Control", "Shift", "Meta" (Command key on Mac), or "AltGraph" (Option key on Mac).
+Non-modifier keys are keys that have impact when used alone, be that printing a character, moving focus, or otherwise creating a keyboard event when used. Non-modifiers that print a single character include characters like P, z and ..
+Since the plus sign is used in writing key combinations, it is written as plus if used as the non-modifier. Other written-out non-modifiers include white space characters Space, Tab, and Enter, and all characters that result in actions, like ArrowUp, PageUp, and Escape.
+If you want to use a character that might cause problems, like a double quote character within double quotes, escape the character: Control+&#39;.
+Modifier keys must be listed first in each key combination. Possible key combinations include Control+P or Shift+Space and Q. If the full shortcut requires all three of these combinations in order, it would be written as aria-keyshortcuts="Control+P Shift+Space Q". When a key combination includes more than one modifier key, the order of the modifiers doesn't matter, but they all must come first, before the non-modifier.
+These two attribute declarations are equivalent.
+aria-keyshortcuts="Shift+Control+V"
+aria-keyshortcuts="control+shift+v"
+
+
+Note that text case doesn't matter. But order of non-modifier does.
+These two attribute declarations are invalid because the non-modifier must be last.
+aria-keyshortcuts="V+Shift+Control"
+aria-keyshortcuts="V+Control+Shift"
+
+
+The key combination listed must be the keys the user needs to press, not the outcome of the combined key strokes. For example, on a USA keyboard, if you need the @ symbol, the key combination is written as "Shift+2", not "@" nor "Shift+@".
+Best practices
+
+In trying to improve the accessibility of your sites and applications, there are some best practices to follow to ensure your "enhancements" don't negatively impact user experience. Remember, no ARIA is better than bad ARIA.
+Don't override browser, assistive technology, or operating system shortcuts
+
+When implementing keyboard shortcuts, make sure you don't create shortcuts that are already being used by the browser, assistive technology, or operating system, unless they are used for the same thing. For example, "Control+P" is used by most user-agents to initiate print functionality. Generally a web application should not create a "Control+P" shortcut as it will usurp browser functionality. There are exceptions. Web applications where printing is common, like email applications or document editors, usurping the browser's "Control+P" printing functionality for an application specific print flow would be expected.
+Unless you're creating an HTML version of a productivity application, you should likely avoid implementing keyboard shortcut. While overriding an operating system or browser keyboard shortcut can be annoying for non-assistive technology users, if you override a screen reader's keyboard functionality you can completely shut down access for the assistive technology user. If you must create keyboard shortcuts, avoid single letter keyboard shortcuts and common screen reader keyboard shortcuts.
+Consider language and keyboard differences
+
+Take into account the diversity of available keyboards and the various keyboard language preferences. Modifier keys are often used to create language specific common punctuation symbols and number characters. For example, numbers, when the keyboard language preference is set to French (France), use the Shift key.
+Don't use HTML instead
+
+The aria-keyshortcuts attribute is very similar to the problematic HTML accesskey, which generates a keyboard shortcut for the current element. When an accesskey is defined for an element, the browser defines the modifiers and does all the work of handling the shortcut with no scripting required. Every browser and operating system combination has their own modifier keys for the non-modifier set in the accesskey attribute. What may work for one combination of operating system, assistive technology, and browser may not work with other combinations. With aria-keyshortcuts, the modifier keys are included in the attribute value list of key combinations and the functionality has to be scripted in.
+HTML
+Copy to Clipboard
+<p>
+  Press the
+  <strong><u>S</u></strong
+  >tress reliever to relax!
+</p>
+<button accesskey="s">Stress reliever</button>
+
+
+In this example, we ensured the presence of the shortcut was known to sighted users a well by highlighting the non-modifier character.
+While the goal of the accesskey attribute matches the intention of aria-keyshortcuts and to do so natively, accesskey is rife with issues. Because of these issues, it is generally advised not to use access keys for most general-purpose websites and web apps.
+In addition to poor browser support, the same concerns arise for accesskey as exist for aria-keyshortcuts:
+
+An accesskey value can conflict with a system or browser keyboard shortcut, or assistive technology functionality.
+Certain key values may not be present on certain keyboards, especially when internationalization is a concern. So adapting to specific languages could cause further problems.
+Values that rely on numbers may be confusing to individuals experiencing cognitive concerns, where the number doesn't have a logical association with the functionality it triggers.
+Informing the user that shortcuts are present, so that they are aware of the functionality. If the system lacks a method of notifying the user about this feature, the user might accidentally activate a shortcut.
+Values
+<string>
+
+The space-separated list of key combinations that, when pressed, perform the action.
+Example
+
+In this example, the aria-keyshortcuts attribute on the element is set to "Alt+Shift+A".
+HTML
+Copy to Clipboard
+<a href="#content" aria-keyshortcuts="Alt+Shift+A">Skip to content</a>
+
+Associated interfaces
+Element.ariaKeyShortcuts
+
+The ariaKeyShortcuts property, part of the Element interface, reflects the value of the aria-keyshortcuts attribute.
+ElementInternals.ariaKeyShortcuts
+
+The ariaKeyShortcuts property, part of the ElementInternals interface, reflects the value of the aria-keyshortcuts attribute.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-label
+
+The aria-label attribute defines a string value that can be used to name an element, as long as the element's role does not prohibit naming.
+
+Description
+
+Sometimes, the default accessible name of an element is missing or the accessible name does not accurately describe the contents of the element and there is no content visible in the DOM that can be associated with the object to give it meaning. A common example of such an element is a button containing an SVG icon without any text.
+In cases where an element that is not part of the prohibited list, has no accessible name or an accessible name is not accurate and there is no content visible in the DOM that can be referenced via the aria-labelledby attribute, the aria-label attribute can be used to define a string that labels the interactive element on which it is set. This provides the element an accessible name.
+The code below shows an example of how to use the aria-label attribute to provide an accessible name for a <button> element. The button in this example contains an SVG graphic and lacks textual content, making the aria-label essential for screen reader users to understand its function, which in this case is "Close".
+HTML
+Copy to Clipboard
+<button aria-label="Close" onclick="myDialog.close()">
+  <svg
+    aria-hidden="true"
+    focusable="false"
+    width="17"
+    height="17"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="m.967 14.217 5.8-5.906-5.765-5.89L3.094.26l5.783 5.888L14.66.26l2.092 2.162-5.766 5.889 5.801 5.906-2.092 2.162-5.818-5.924-5.818 5.924-2.092-2.162Z"
+      fill="#000" />
+  </svg>
+</button>
+
+
+Note: aria-label is intended for naming elements where the implicit or explicit role does not prohibit naming. It is strongly recommended to prioritize the use of aria-labelledby over aria-label if a visible label exists for the element to reference and receive its name from.
+Most content has an accessible name generated from its immediate wrapping element's text content. Accessible names can also be created by certain attributes or associated elements.
+By default, a button's accessible name is the content between the opening and closing <button> tags, an image's accessible name is the content of its alt attribute, and a form input's accessible name is the content of the associated <label> element.
+If none of these options are available or if the default accessible name is not appropriate, use the aria-label attribute to define the accessible name of an element.
+Note: While aria-label can be used on any element that can have an accessible name, in practice however, it is supported only on interactive elements, widgets, landmarks, images, and iframes.
+When using aria-label, you also need to consider aria-labelledby:
+
+aria-label can be used in cases where text that could label the element is not visible. If there is visible text that labels an element, use aria-labelledby instead.
+The purpose of aria-label is the same as aria-labelledby. Both provide an accessible name for an element. If there is no visible name for the element you can reference, use aria-label to provide the user with a recognizable accessible name. If label text is available in the DOM and it's possible to reference it for an acceptable user experience, prefer to use aria-labelledby. Don't use both on the same element because aria-labelledby will take precedence over aria-label if both are applied.
+Keep the following additional guidelines in mind when using aria-label:
+
+The aria-label attribute can be used with regular, semantic HTML elements; it is not limited to elements that have an ARIA role assigned.
+Don't "overuse" aria-label. Remember that it's primarily for assistive technologies. To provide additional instructions or to clarify the UI, use visible text with aria-describedby or aria-description, not aria-label. Instructions should be accessible to all users, not just to those with screen readers (or preferably, make your UI more intuitive).
+Note: Since aria-label content isn't displayed outside assistive technologies, consider making important information visible for all users.
+Not all elements can be given an accessible name. Neither aria-label nor aria-labelledby should be used with inline structural roles such as with code, term, and emphasis, and roles not mapped to the accessibility API, including none. The aria-label attribute is intended for elements including links, videos, form controls, and those with landmark roles or widget roles; aria-label provides an accessible name when no visible label exists in the DOM.
+If you assign a title to an <iframe>, define an alt attribute for an <img>, or add <label> for an <input>, aria-label is not necessary. However, if an aria-label attribute is present, it will take precedence over the iframe's title, the image's alt, or the input's <label> text as the accessible name for that element.
+Values
+<string>
+
+A string of text that will be the accessible name for the object.
+Associated interfaces
+Element.ariaLabel
+
+The ariaLabel property, part of the Element interface, reflects the value of the aria-label attribute.
+ElementInternals.ariaLabel
+
+The ariaLabel property, part of the ElementInternals interface, reflects the value of the aria-label attribute.
+Associated roles
+
+Used in almost all roles except roles that cannot be provided an accessible name by the author.
+The aria-label attribute is NOT supported in:
+
+code
+caption
+definition
+deletion
+emphasis
+generic
+insertion
+mark
+paragraph
+presentation / none
+strong
+subscript
+superscript
+suggestion
+term
+time
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-labelledby
+
+The aria-labelledby attribute identifies the element (or elements) that labels the element it is applied to.
+
+Description
+
+The aria-labelledby property enables authors to reference other elements on the page to define an accessible name. This is useful when using elements that don't have native support for associating elements to provide an accessible name.
+Some elements get their accessible name from their inner content. For example, the accessible name for a <button>, <a>, or <td> comes from the text between the opening and closing tags. Other elements, such as form <textarea>, <fieldset>, and <table> get their accessible name from the content of associated elements; for these elements, the accessible name comes from the <label> with a for attribute, <legend>, and <caption> respectively.
+All interactive elements must have an accessible name. aria-labelledby can be used to reference another element to define its accessible name, when an element's accessible name needs to use content from elsewhere in the DOM.
+If there is no content that can be referenced to create an accessible name, the aria-label attribute should be used instead.
+The purpose of aria-labelledby is the same as that of aria-label. It provides the user with a recognizable, accessible name for an interactive element. If an element has both attributes set, aria-labelledby will be used. aria-labelledby takes precedence over all other methods of providing an accessible name, including aria-label, <label>, and the element's inner text.
+The aria-labelledby and aria-describedby attributes both reference other elements to calculate text alternatives. aria-labelledby should reference brief text that provides the element with an accessible name. aria-describedby is used to reference longer content that provides a description. If there is no element in the DOM that provides a brief label appropriate for an accessible name for an interactive element, use aria-label to define the accessible name for an interactive element.
+Note: While in American English, "labeled" is spelled with one "l", the "labelledby" spelling has been established and is the spelling used in accessibility APIs.
+The following example uses aria-labelledby to provide an accessible name for a checkbox input by using the text content of a sibling element:
+
+HTML
+Copy to Clipboard
+<span
+  role="checkbox"
+  aria-checked="false"
+  tabindex="0"
+  aria-labelledby="tac"></span>
+<span id="tac">I agree to the Terms and Conditions.</span>
+
+
+Note that while using aria-labelledby is similar in this situation to using an HTML <label> element with the for attribute, there are some very important differences. The aria-labelledby attribute only defines the accessible name. It doesn't provide any of <label>'s other functionality, such as making clicking on the labeling element activate the input it is associated with. That has to be added back in with JavaScript.
+Fortunately, the HTML <input> with type="checkbox" works with native <label>. When feasible, use the following:
+
+HTML
+Copy to Clipboard
+<label for="tac">
+  <input id="tac" type="checkbox" name="terms-and-conditions" />
+  I agree to the Terms and Conditions.
+</label>
+<p><a href="tac.html">Read our Terms and Conditions</a>.</p>
+
+Benefits (and drawbacks)
+
+The aria-labelledby property has the highest precedence when browsers calculate accessible names. Be aware that it overrides other methods of naming the element, including aria-label, other naming attributes, and even the element's contents.
+HTML
+Copy to Clipboard
+<button aria-label="Blue" aria-labelledby="color">Red</button>
+<span id="color">Yellow</span>
+
+
+In this example, that accessible name is "Yellow".
+The aria-labelledby property takes as value a space-separated id reference list, which means you can combine more than one element into a single accessible name. You can include the id of the element itself to reference its own content.
+HTML
+Copy to Clipboard
+<h2 id="attr" class="article-title">13 ARIA attributes you need to know</h2>
+<p>
+  There are over 50 ARIA states and properties, but 13 of them stand out…
+  <a href="13.html" id="rm13" aria-labelledby="rm13 attr">read more</a>
+</p>
+
+
+In this example, the accessible name is "read more 13 ARIA attributes you need to know".
+The aria-labelledby property value order matters. When more than one element is referenced by aria-labelledby, the content from each referenced element is combined in the order that they are referenced in the aria-labelledby value. Had we written aria-labelledby="attr rm13">, the accessible name would have been "13 ARIA attributes you need to know read more".
+The aria-labelledby property ignores repeated ids in its value. If an element is referenced more than one time, only the first reference is processed. aria-labelledby="attr attr rm13 rm13"> is treated as aria-labelledby="attr rm13">
+
+The aria-labelledby property value can include content from elements that aren't even visible. While you should provide assistive technology users with the same content as all other users, you can include content from elements with the HTML hidden attribute, CSS display: none, and CSS visibility: hidden in the calculated name string.
+The aria-labelledby property incorporates the value of input elements. If the value references an <input>, the current value of the form control is included in the calculated name string, changing if the value is updated.
+The aria-labelledby property cannot be chained. If an element with aria-labelledby references another element that also has aria-labelledby, the aria-labelledby attribute on the referenced element is ignored.
+Warning: Because calculating the name of an element with aria-labelledby can be complex and reference hidden content, testing with assistive technologies to ensure the expected name is presented to users is very important.
+Values
+ID reference list
+
+Space separated list of one or more ID values referencing the elements that label the current element.
+Associated roles
+
+Used in almost all roles except roles that can not be provided an accessible name by the author.
+The aria-labelledby attribute is NOT supported in:
+
+code
+caption
+deletion
+emphasis
+generic
+insertion
+mark
+paragraph
+presentation / none
+strong
+subscript
+superscript
+suggestion
+term
+time
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-level
+
+The aria-level attribute defines the hierarchical level of an element within a structure.
+
+Description
+
+Levels of hierarchy appear in headings, trees, nested grid, nested tablists, and more. If the DOM ancestry does not accurately represent the level, the aria-level attribute should be used to define the hierarchical level elements within their hierarchical structures. Levels increase with depth. The value for aria-level is an integer greater than or equal to 1.
+When it comes to the headings in a document structure, you can have first-level headings, second-level headings, third-level headings, etc. In trees, you have the root element, its children, the children's children (or grandchildren), and so on.
+The aria-level attribute exposes hierarchy to assistive technologies so it can be communicated to the users. Like all ARIA attributes, it has no impact on the user agent and therefore no impact on the user agent's determination of the document structure.
+If the DOM ancestry accurately represents the level, the user agent can calculate the level of an item from the document structure, making aria-level not only redundant but a risk of creating misinformation. aria-level should really only be used to provide an explicit indication of level when it is not possible to calculate from the document structure. Test to see if this attribute is needed. If the user agent can calculate the level, it is best to omit the aria-level attribute.
+With heading role
+
+The aria-level attribute is a required attribute of the heading role which indicates to assistive technologies that the element should be treated as a heading. <div role="heading" aria-level="1"> defines the <div> as being the main heading of the page. A level 2 heading, defined with aria-level="2" would be the first subsection, a level 3 is a subsection of that, and so on.
+HTML
+Copy to Clipboard
+<div role="heading" aria-level="3">Heading for this sub section</div>
+
+
+Opt for using the h1 through h6 elements instead.
+Within treegrid role
+
+In the case of a treegrid, aria-level is supported on elements with the role row, not elements with role gridcell. Rows act as leaf nodes within the vertical orientation of the grid. Gridcells are leaf nodes within the horizontal orientation of each row. Aria-level is not supported on cells within rows. So, in treegrids, the aria-level attribute is applied to the element with the role row.
+If a complete set of available nodes is not present in the DOM due to dynamic loading as the user moves focus in or scrolls the tree, each node has aria-level, aria-setsize, and aria-posinset included.
+Values
+<integer>
+
+An integer greater than or equal to 1
+
+Associated interfaces
+Element.ariaLevel
+
+The ariaLevel property, part of the Element interface, reflects the value of the aria-level attribute.
+ElementInternals.ariaLevel
+
+The ariaLevel property, part of the ElementInternals interface, reflects the value of the aria-level attribute.
+Associated roles
+
+Used in roles:
+
+associationlistitemkey
+comment
+heading
+row
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-live
+
+The global aria-live attribute indicates that an element will be updated, and describes the types of updates the user agents, assistive technologies, and user can expect from the live region.
+
+Description
+
+When content changes after initial load, assistive technology (AT) users may not "see" the changes. Some changes are important. Others are not. The aria-live attribute enables developers to inform the user of updates and choose, based on importance and urgency, whether to immediately, proactively, or passively inform AT users of changes to the content.
+If a section of the screen updates, if it's styled in a way to be noticeable, most sighted users will generally notice live updates. Screen readers, on the other hand, only focus on one part of the page at a time; and that part may not be where the update is. The aria-live attribute provides a way for developers to announce such changes to AT based on event triggers set by the developer rather than by user initiated actions so they are made aware that the content has changed.
+HTML
+Copy to Clipboard
+<div id="announce" aria-live="polite"></div>
+
+
+The aria-live attribute is set on an empty element. When an update to the page occurs, the empty element with that aria-live attribute should be updated with a brief announcement informing the user an update has been made.
+HTML
+Copy to Clipboard
+<div id="announce" aria-live="polite">
+  <p>This message is announced.</p>
+</div>
+
+
+When the accessibility API recognizes a change to the live region above, it will announce the contents of that live region based on the value of the attribute. The element is not given focus.
+If you want all the contents of the live region to be read, use the aria-atomic. Use aria-relevant to define only the sections of an update that need to be reread to the user. Use aria-busy to prevent announcements while updates are still being made.
+Choosing the aria-live value
+
+As some assistive technology users can't "see" live updates, the aria-live attribute is used to define what updated information the user should be:
+
+Made aware of immediately,
+Informed about if the opportunity avails itself, and
+Proactively informed about but can learn when they choose to focus on the updated area.
+aria-live's value describes the types of updates the user agents, assistive technologies, and user can expect from the live region, and is used to express degrees of importance.
+When aria-live's attribute is set to polite, assistive technologies will notify users of updates but generally do not interrupt the current task, with the updates having a low priority. When set to assertive, assistive technologies immediately notify the user, potentially clearing the speech queue of previous updates.
+Screen readers buffer content when the page is loaded. Because of this, content added after the initial accessibility tree is built may not be noticed as AT users start consuming content before dynamic widgets are populated—users may not know about the page or view content updating as widgets finish loading. In this situation you can let users know the page has been updated by setting aria-live="polite".
+Fully populated pages may have updates too. Examples are content like real-time sports scores, news crawlers, and stock market tickers. Unless these kinds of updates are the main function of the page, you likely do not want to inform the user every time it updates, but do want to inform them the widget does get updated. Here, you would set aria-live="off". In these scenarios there is no reason to inform the user of updates unless they are focused on the live region.
+Some live updates are important and time sensitive. For example, if you are selling concert tickets and the user has a limited time to make the purchase, you don't want to wait until a lull in activity to tell them their time is almost up (or already over). When being informed as soon as possible is necessary, set aria-live="assertive". If the updated information is an alert, the aria-live attribute is not needed.
+In this time-limit scenario, to be accessible, you need to also provide a way for users to extend the time available or turn the timer off completely.
+Using aria-live
+
+A live region includes the element and all its descendants. When not set on updating content, aria-live's value comes from the nearest ancestor with a valid aria-live attribute value set. When set to off, or when the attribute is omitted altogether on the updated element and all the ancestor nodes in the DOM tree, the user is not informed. Users will still be able to hear the updates if they navigate to the live region, however.
+Warning: Because an interruption may disorient users or cause them to not complete their current task, don't use the assertive value unless the interruption is imperative.
+Values
+assertive
+
+Indicates that updates to the region have the highest priority and should be presented to the user immediately.
+off (default)
+
+Indicates that updates to the region should not be presented to the user unless the user is currently focused on that region.
+polite
+
+Indicates that updates to the region should be presented at the next graceful opportunity, such as at the end of speaking the current sentence or when the user pauses typing.
+Associated interfaces
+Element.ariaLive
+
+The ariaLive property, part of the Element interface, reflects the value of the aria-live attribute.
+ElementInternals.ariaLive
+
+The ariaLive property, part of the ElementInternals interface, reflects the value of the aria-live attribute.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-modal
+
+The aria-modal attribute indicates whether an element is modal when displayed.
+
+Description
+
+A section of content is "modal" means navigation is limited to the area itself and the background (the ancestors and siblings of the modal) is hidden. Setting aria-modal="true" on dialog and alertdialog role containers indicates the presence of a "modal" element to users of assistive technology, but does not actually make the element modal. The features that make the element actually modal must be implemented by the developer.
+Note: ARIA only modifies the accessibility tree, modifying how assistive technology presents the content to your users. ARIA doesn't change anything about an element's function or behavior. To create a modal effect you must use JavaScript to manage behavior, focus, and ARIA states.
+Relevant only on dialog and alertdialog containers, setting aria-modal="true" tells assistive technologies to let the user know the ability to interact with, or access other content on the page requires the modal dialog to be closed or otherwise lose focus.
+Modal dialogs are when content is displayed and the user's interaction is limited to only that section until it is dismissed.
+When creating modal dialogs, aria-modal="true" tells assistive technologies that the windows underneath the current dialog are not part of the modal content.
+When a modal element is displayed, focus should be placed in the modal. Focus needs to be "trapped" inside the modal when it is visible, until it is dismissed. Assistive technology (AT) can then navigate the modal's content and understand the scope of the modal's content. The aria-modal attribute helps AT communicate the bounds of the modal and distinguishes it from the rest of the page's content. When dismissed, focus should return to the element that triggered the modal.
+Ensure the modal is controllable using only its descendant elements. If a modal dialog has a close button, the button should be a descendant contained with the modal container in the DOM.
+When a modal element is displayed, authors should mark all other contents as inert (such as "inert subtrees" in HTML). Disabled content is not inert content. Inert content cannot be interacted with using both normal and specialized browsing modes such as caret browsing, which allow an assistive technology user to explore a page in detail. This includes disabled content, whose content may provide meaning.
+The inert attribute is a boolean attribute that indicates, by its presence, that the element and all its shadow-including descendants are to be made inert. Until HTMLElement.inert is fully supported, content can be made inert with JavaScript.
+Including aria-modal="true" on a dialog or alertdialog, removes the requirement of putting aria-hidden on background content, as the aria-modal informs assistive technologies that content outside a dialog is inert. Note that while support for the <dialog> element is good, thoroughly testing your implementation is vitally important.
+If a dialog is not modal — there is no inert background and focus isn't confined to the dialog — either include aria-modal="false" or omit the attribute altogether.
+Example
+HTML
+Copy to Clipboard
+<div id="backdrop" class="no-scroll">
+  <div
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="dialog_label"
+    aria-describedby="dialog_desc">
+    <h2 id="dialog_label">Confirmation</h2>
+    <div id="dialog_desc">
+      <p>Are you sure you want to delete this file?</p>
+    </div>
+    <button type="button" onclick="closeDialog(this)">
+      No. Close this popup.
+    </button>
+    <button type="button" onclick="deleteFile(this)">
+      Yes. Delete the file.
+    </button>
+  </div>
+</div>
+
+
+This partial example includes an alertdialog nested in a full-screen, non-scrollable backdrop.
+The role="alertdialog" identifies the element that serves as the alert dialog container. The aria-labelledby provides the alert dialog an accessible name by referring to the element that provides the alert dialog title. The aria-describedby attribute gives the alert dialog an accessible description by referring to the alert dialog content that describes the primary message or purpose of the alert dialog.
+The aria-modal="true" informs the assistive technology user that the content underneath the dialog is not interactive so long as the element with a declaration of role="alertdialog" has focus.
+The aria-modal attribute exposes the existence of the modal to assistive technologies so the disabling of the content behind the modal can be communicated to AT users. Like all ARIA attributes, aria-modal itself has no effect on the page's functionality; focus management and disabling, interactivity on background elements, and the ability to remove focus from the alertdialog must all be managed with JavaScript.
+Values
+false (default)
+
+Element is not modal.
+true
+
+Element is modal.
+Associated interfaces
+Element.ariaModal
+
+The ariaModal property, part of the Element interface, reflects the value of the aria-modal attribute.
+ElementInternals.ariaModal
+
+The ariaModal property, part of the ElementInternals interface, reflects the value of the aria-modal attribute.
+Associated roles
+
+Used in roles:
+
+window
+
+Inherits into roles:
+
+alertdialog
+dialog
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-multiline
+
+The aria-multiline attribute indicates whether a textbox accepts multiple lines of input or only a single line.
+
+Description
+
+The default behavior of the Enter or Return key differs between single-line and multi-line text fields. When user focus is in a single-line <input type="text">, an Enter or Return keystroke usually submits the form.
+When user focus is in a multi-line <textarea>, the keystroke inserts a line break. Only relevant for elements with the textbox role set, the aria-multiline attribute indicates to assistive technologies whether that text box accepts multiple lines of input or only a single line, setting expectations as to what type of data to enter and what those keystroke will do.
+Note: Where possible, use the HTML <input> or the <textarea>, as these have built in semantics and behaviors, do not require ARIA attributes or scripting, and have keyboard support built in.
+If the aria-multiline="true" is set, it means the textbox widget will accept line breaks within the input, similar to the HTML <textarea>. Elements with a role of textbox that do not have the attribute, or with the value set to false, are simple text box.
+Be aware of focus and keystrokes when designing text boxes. ARIA only modifies the accessibility tree and therefore how assistive technology presents the textbox to your users. ARIA doesn't change anything about an element's default function or behavior. When not using semantic HTML elements for their intended purpose and default functionality, you must use JavaScript to manage behavior and functionality, including responding to keystroke events.
+Values
+true
+
+The text box accepts multiple lines of input.
+false
+
+The text box only accepts a single line of input.
+Associated interfaces
+Element.ariaMultiLine
+
+The ariaMultiLine property, part of the Element interface, reflects the value of the aria-multiline attribute.
+ElementInternals.ariaMultiLine
+
+The ariaMultiLine property, part of the ElementInternals interface, reflects the value of the aria-multiline attribute.
+Associated roles
+
+Used in roles:
+
+textbox
+
+Inherits into roles:
+
+searchbox
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-multiselectable
+
+The aria-multiselectable attribute indicates that the user may select more than one item from the current selectable descendants.
+
+Description
+
+The default behavior of selection lists, such as <select>, is to be able to choose only one item or option. By default or by convention, when a user is presented with list from which they must select an item, they assume they can only select a single item unless otherwise notified. The aria-multiselectable attribute is the way to inform assistive technology users that they may select more than one item from the current selectable items if they so choose. Lists and trees are examples of roles that might allow users to select more than one item at a time.
+Note: When allowing for multiple selections, inform the user that multiple values are allowed and provide directions on how to provide multiple values, such as "to select more than one value, keep the control key pressed during selection."
+
+Used with aria-selected
+
+When the user does select one or more items, remember to set the selected descendants as selected with aria-selected="true", and selectable descendants that are not selected have aria-selected="false" set. If an element is not selectable, omit the aria-selected attribute altogether as its presence informs the user the item is selectable.
+If a tree, grid, tab list, or list box supports selection of more than one node, the element with role grid, listbox, tablist, or tree has aria-multiselectable set to true. Otherwise, aria-multiselectable is either set to false or the default value of false is implied.
+Example
+HTML
+Copy to Clipboard
+<p id="colorOptions">Choose the colors for your flag.</p>
+<ul
+  tabindex="0"
+  role="listbox"
+  aria-labelledby="colorOptions"
+  aria-multiselectable="true">
+  <li id="red" role="option" aria-selected="false">Red</li>
+  <li id="orange" role="option" aria-selected="false">Orange</li>
+  <li id="yellow" role="option" aria-selected="false">Yellow</li>
+  <li id="green" role="option" aria-selected="false">Green</li>
+  <li id="blue" role="option" aria-selected="false">Blue</li>
+  <li id="purple" role="option" aria-selected="false">Purple</li>
+  <li id="magenta" role="option" aria-selected="false">Hot pink</li>
+  <li id="lightpink" role="option" aria-selected="true">Light pink</li>
+  <li id="white" role="option" aria-selected="true">White</li>
+  <li id="lightblue" role="option" aria-selected="true">Light blue</li>
+  <li id="black" role="option" aria-selected="false">Black</li>
+  <li id="brown" role="option" aria-selected="false">Brown</li>
+</ul>
+
+
+This listbox supports multiple selection so we set the element with role listbox with aria-multiselectable="true". All selected options have aria-selected set to true. All options that are not selected but are selectable have aria-selected set to false. Had we included options that were disabled or otherwise not selectable, we would have omitted the aria-selected attribute altogether. Including the attribute, even with no value or explicitly set to false indicates to assistive technology users that the item is selectable.
+The first rule of ARIA use is "if you can use a native feature with the semantics and behavior you require already built in, instead of repurposing an element and adding an ARIA role, state or property to make it accessible, then do so." Instead of creating an unordered list requiring tabindex, ARIA and JavaScript to turn text into selectable options, we could have used a native multiselect: the <select> element has a Boolean multiple attribute. If included, the user can select multiple options. If not, only a single option can be selected.
+HTML
+Copy to Clipboard
+<label for="flagcolors"> Choose the colors for your flag. </label>
+<select multiple id="flagcolors">
+  <option value="red">Red</option>
+  <option value="orange">Orange</option>
+  <option value="yellow">Yellow</option>
+  <option value="green">Green</option>
+  <option value="blue">Blue</option>
+  <option value="purple">Purple</option>
+  <option value="magenta">Hot pink</option>
+  <option value="lightpink" selected>Light pink</option>
+  <option value="white" selected>White</option>
+  <option value="lightblue" selected>Light blue</option>
+  <option value="black">Black</option>
+  <option value="brown">Brown</option>
+</select>
+
+
+This HTML <select> version is accessible and interactive, and needs no ARIA or JavaScript to function.
+If the above isn't stylable to your liking, you can also create a list of selectable options with HTML checkboxes, which is also semantic, focusable, and infinitely stylable with CSS:
+
+HTML
+Copy to Clipboard
+<fieldset>
+  <legend>Choose the colors for your flag.</legend>
+  <ul>
+    <li>
+      <label><input type="checkbox" name="fc" value="red" />Red</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="orange" />Orange</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="yellow" />Yellow</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="green" />Green</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="blue" />Blue</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="purple" />Purple</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="magenta" />Hot pink</label>
+    </li>
+    <li>
+      <label
+        ><input type="checkbox" name="fc" value="lightpink" checked />Light
+        pink</label
+      >
+    </li>
+    <li>
+      <label
+        ><input type="checkbox" name="fc" value="white" checked />White</label
+      >
+    </li>
+    <li>
+      <label
+        ><input type="checkbox" name="fc" value="lightblue" checked />Light
+        blue</label
+      >
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="black" />Black</label>
+    </li>
+    <li>
+      <label><input type="checkbox" name="fc" value="brown" />Brown</label>
+    </li>
+  </ul>
+</fieldset>
+
+
+Instead of aria-selected="true", include the checked attribute. The browser does the rest.
+Values
+true
+
+More than one item in the widget may be selected at a time
+
+false
+
+Only one item can be selected
+
+Associated interfaces
+Element.ariaMultiSelectable
+
+The ariaMultiSelectable property, part of the Element interface, reflects the value of the aria-multiselectable attribute.
+ElementInternals.ariaMultiSelectable
+
+The ariaMultiSelectable property, part of the ElementInternals interface, reflects the value of the aria-multiselectable attribute.
+Associated roles
+
+Used in roles:
+
+grid
+listbox
+tablist
+tree
+
+Inherited into roles:
+
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-orientation
+
+The aria-orientation attribute indicates whether the element's orientation is horizontal, vertical, or unknown/ambiguous.
+
+Description
+
+It may be important for the user to know the orientation to know how to navigate certain widgets, as orientation impacts the expected behaviors of the left, right, up and down arrows. The aria-orientation attribute is used to indicate to assistive technology users whether an element's orientation is horizontal or vertical, or undefined.
+Several widgets have default orientations:
+
+Horizontal by default:
+
+slider,
+tablist
+toolbar
+menubar
+
+Vertical by default:
+
+scrollbar
+tree
+listbox
+menu
+
+Each separator should have aria-orientation consistent with the separator's orientation.
+When nodes in a tree are arranged horizontally instead of its default vertical orientation, or when a tab list is vertical instead of its default horizontal, the down arrow performs as a right arrow normally would, and the up arrow performs as a left arrow normally would. In these instances, assistive technology users need to know the widget's orientation so as to navigate correctly.
+Up and down arrows are generally available for normal browser scrolling, even when focus is inside a tree or tab list. Include aria-orientation to enable alerting users when a widget doesn't have the default, expected orientation and associated navigation.
+Always remember that ARIA only modifies how assistive technology presents content to your users; altering the behavior of arrow keys requires JavaScript.
+Values
+horizontal
+
+The element is oriented horizontally.
+undefined (default)
+
+The element's orientation is unknown/ambiguous.
+vertical
+
+The element is oriented vertically.
+Associated interfaces
+Element.ariaOrientation
+
+The ariaOrientation property, part of the Element interface, reflects the value of the aria-orientation attribute.
+ElementInternals.ariaOrientation
+
+The ariaOrientation property, part of the ElementInternals interface, reflects the value of the aria-orientation attribute.
+Associated roles
+
+Used in roles:
+
+scrollbar
+select
+separator
+slider
+tablist
+toolbar
+
+Inherited into roles:
+
+listbox
+menu
+menubar
+radiogroup
+tree
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-owns
+
+The aria-owns attribute identifies an element (or elements) in order to define a visual, functional, or contextual relationship between a parent and its child elements when the DOM hierarchy cannot be used to represent the relationship.
+
+Description
+
+Every element is the parent, sibling, or child of another element. The document object, made up of HTML elements and text nodes, is the basis of the DOM tree. The Accessibility Object Model (AOM) relies on a well-built DOM to enable assistive technologies to relay meaningful information about a document's contents to users.
+There are circumstances where the layout that appears on screen may differ from the underlying DOM structure due to the ability of JavaScript to alter content and CSS to alter layout. When this is the case, the aria-owns attribute can be used to recreate a meaningful relationship for assistive technology that consumes the DOM.
+When elements appear to be related visually but are not associated in the DOM, the aria-owns attribute enables creating the relationship that appears on screen in the accessibility layer for use by assistive technology. The only reason to include aria-owns is to expose a parent/child contextual relationship to assistive technology when the DOM's construction can't provide that relationship.
+An "owning element" is any DOM ancestor of an element. If an element visually, functionally, or contextually appears to "own" (be an ancestor of) an element, but isn't actually an ancestor of the element in the DOM, include the aria-owns to create that relationship. Add the attribute to the owning element with reference to the non-child owned element (or elements) to tell assistive technology that an element should be treated as a child.
+Referencing the ID of one or more elements allows any element to "own" any other element with an aria-owns declaration. The value of the aria-owns attribute is a space-separated ID reference list that references the IDs of one or more elements in the document.
+Note: An "owned" element is any DOM descendant of the element, any element specified as a child via aria-owns, or any DOM descendant of the owned child. The aria-owns-owned element should be an element that belongs to a separate parent tree in the DOM but should be treated as a child of the current element.
+Do not use aria-owns as a replacement for the DOM hierarchy. If the relationship is represented in the DOM, do not use aria-owns.
+A child element is owned by its DOM parent by default: in this case, aria-owns should not be used. Avoid using the aria-owns attribute to rearrange existing child elements into a different order.
+When using aria-owns, make sure you manage focus order. Ensure the visual focus order matches this assistive technology reading order.
+An example of when to use aria-owns includes pop-up sub-menus that visually appear positioned near a parent menu, but cannot be nested in the DOM within the parent menu because it would affect the visual presentation. In this case, use aria-owns to present the sub-menu as a child of the parent menu to a screen reader.
+Note: The aria-owns attribute should only be used when the parent/child relationship cannot be determined from the DOM.
+If an element has both aria-owns and DOM children, the order of the child elements:
+
+The actual DOM children first,
+Then the elements referenced in aria-owns.
+This order can be changed by including the ID references to the actual DOM children in the aria-owns value.
+The order property, part of flex or grid layouts, can be used to change the order of flex and grid items making them appear in a different order from their order in the source document, creating a divergence of the logical order of elements. While it may be tempting to order the accessibility layer to match order changes created with the CSS order property, avoiding both the order property and the aria-owns attribute is the best option.
+Make sure your owned elements have only one owner. Do not specify the id of an element in more than one other element's aria-owns attribute. An element can have only one owner.
+Warning: While aria-owns is now supported in all modern browsers, aria-owns may not be exposed to users of macOS and iOS using VoiceOver prior to iOS 17.3 and macOS 14.3.
+Values
+id list
+
+Space separated list of one or more ID values referencing the elements being owned by the current element
+
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-placeholder
+
+The aria-placeholder attribute defines a short hint (a word or short phrase) intended to help the user with data entry when a form control has no value. The hint can be a sample value or a brief description of the expected format.
+
+Description
+
+A placeholder is text that appears in the form control when it has no value set. The HTML placeholder attribute enables providing a sample value or a brief description of the expected format for several HTML <input> types and <textarea>.
+If you are creating a textbox using any other element, placeholder is not supported. That is where aria-placeholder comes into play. The aria-placeholder attribute can be used to defines a short hint to help the user understand what type of data is expected when a non-semantic form control has no value.
+HTML
+Copy to Clipboard
+<span id="date-of-birth">Birthday</span>
+<div
+  contenteditable
+  role="textbox"
+  aria-labelledby="date-of-birth"
+  aria-placeholder="MM-DD-YYYY">
+  MM-DD-YYYY
+</div>
+
+
+The placeholder hint should be shown to the user whenever the control's value is empty, including when a value is deleted.
+Note: ARIA is only modify the accessibility tree for an element and therefore how assistive technology presents the content to your users. ARIA doesn't change anything about an elements function or behavior. When not using semantic HTML elements for their intended purpose and default functionality, you must use JavaScript to manage behavior.
+The aria-placeholder is used in addition to, not instead of, a label. They have different purposes and different functionality. A label explains what kind of information is expected. Placeholder text provides a hint about the expected value.
+Warning: Using a placeholder instead of a visible label harms accessibility and usability for many users including older users and users with cognitive, mobility, fine motor skill and vision impairments. Labels are better: they are always visible and they provide for a larger hit region to focus on the control. Placeholders have several drawbacks: they disappear when the control has any value including just white space, they can confuse users into thinking the value is pre-filled, and the default color has insufficient contrast.
+Note: Placeholders should only be used to show an example of the type of data that should be entered into a form; they don't replace a proper label.
+Values
+<string>
+
+The word or short phrase to display in a control when the control has no value.
+Associated interfaces
+Element.ariaPlaceholder
+
+The ariaPlaceholder property, part of the Element interface, reflects the value of the aria-placeholder attribute.
+ElementInternals.ariaPlaceholder
+
+The ariaPlaceholder property, part of the ElementInternals interface, reflects the value of the aria-placeholder attribute.
+Associated roles
+
+Used in roles:
+
+textbox
+
+Inherited into roles:
+
+searchbox
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-posinset
+
+The aria-posinset attribute defines an element's number or position in the current set of listitems or treeitems when not all items are present in the DOM.
+
+Description
+
+Short for "position in set", the aria-posinset attribute defines the position of the element within the whole set of listitems or treeitems when only a subset of the items are present in the DOM.
+If all the items in a list are present in the DOM, the browser can calculate the total and the position of each, making aria-posinset unnecessary. When only a portion of a set is in the DOM, include aria-posinset to provide information about the element's position within the set along with aria-setsize to inform the user how many items are in the full set.
+The following example shows a listbox with four element options out of the 118 in the periodic table of chemical elements.
+HTML
+Copy to Clipboard
+<h2 id="periodic-table">Periodic table of chemical elements</h2>
+<ul role="listbox" aria-labelledby="periodic-table">
+  <li role="option" aria-setsize="118" aria-posinset="1">Hydrogen</li>
+  <li role="option" aria-setsize="118" aria-posinset="3">Lithium</li>
+  <li role="option" aria-setsize="118" aria-posinset="11">Sodium</li>
+  <li role="option" aria-setsize="118" aria-posinset="19">Potassium</li>
+</ul>
+
+
+The value of each aria-posinset is an integer greater than or equal to 1, and less than or equal to the size of the set when that size is known.
+Note: When using aria-posinset you must also include value for aria-setsize, which is the size of the entire set. If the size of the entire set is unknown, set aria-setsize="-1".
+For menuitem, menuitemcheckbox, or menuitemradio, set the value of aria-posinset with respect to the total number of items in the menu, excluding any separators.
+In a feed, each <article> element has aria-posinset set to a value that represents its position in the feed along with the aria-setsize set to either the number of articles that have been loaded or the total number in the feed, depending on which value is most helpful to users.
+Values
+<integer>
+
+Integer greater than or equal to 1, and less than or equal to the value of aria-setsize.
+Associated interfaces
+Element.ariaPosInSet
+
+The ariaPosInSet property, part of the Element interface, reflects the value of the aria-posinset attribute.
+ElementInternals.ariaPosInSet
+
+The ariaPosInSet property, part of the ElementInternals interface, reflects the value of the aria-posinset attribute.
+Associated roles
+
+Used in roles:
+
+article
+associationlistitemkey
+associationlistitemvalue
+comment
+listitem
+menuitem
+option
+radio
+row
+tab
+
+Inherits into roles:
+
+comment
+menuitemcheckbox
+menuitemradio
+treeitem
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-pressed
+
+The aria-pressed attribute indicates the current "pressed" state of a toggle button.
+
+Description
+
+Adding aria-pressed to an element with a role of button turns the button into a toggle button. The aria-pressed attribute is only relevant for toggle buttons. It represents the button's current "pressed" state.
+The value is "tri-state", meaning the value can be set to true, false, mixed, or undefined values. In the case of aria-pressed, like most tri-state value types, the default value is undefined.
+Toggle buttons require a full press-and-release cycle to change their value. Pressing and releasing it once changes the value to true. If it's pressed and released again, the value changes back to false.
+A value of mixed means that the values of more than one item controlled by the button do not all share the same value.
+Do not change the contents of the label on a toggle when the state changes. If a button label says "pause", do not change it to "play" when pressed. In this example, when the pressed state is true, the label remains "Pause" so a screen reader would say something like "Pause toggle button pressed".
+HTML
+Copy to Clipboard
+<button aria-pressed="false">Pause</button>
+
+
+If you want the label to toggle between "Paused" and "Play", don't use aria-pressed.
+The first rule of ARIA use is "if you can use a native feature with the semantics and behavior you require already built in, instead of repurposing an element and adding an ARIA role, state or property to make it accessible, then do so." If we employ native HTML semantics with <button>, we can toggle the label instead of toggling the pressed state, removing the need for the aria-pressed attribute.
+Values
+false
+
+The button supports being pressed but is not currently pressed.
+mixed
+
+Indicates a mixed mode value for a tri-state toggle button.
+true
+
+The button is pressed.
+undefined (default)
+
+The element does not support being pressed.
+Associated interfaces
+Element.ariaPressed
+
+The ariaPressed property, part of the Element interface, reflects the value of the aria-pressed attribute.
+ElementInternals.ariaPressed
+
+The ariaPressed property, part of the ElementInternals interface, reflects the value of the aria-pressed attribute.
+Associated roles
+
+Used in roles:
+
+button
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-readonly
+
+The aria-readonly attribute indicates that the element is not editable, but is otherwise operable.
+
+Description
+
+When you want to indicate that an interactive element works but is not editable, set aria-readonly="true". This indicates to the user that an interactive element that would normally be focusable and copyable has been placed in a read-only (not disabled) state.
+When aria-readonly is set to true, it means the user can read but not set the value of the widget. Read-only elements are still relevant to the user, so you should not prevent the user from navigating to the element or its focusable descendants or copying the value.
+Examples include:
+
+Form elements which should not be changed.
+Row and column headers in a spreadsheet.
+The total value in a shopping cart.
+If the non-changeable value shouldn't be able to receive focus, use aria-disabled instead.
+Note: When using semantic HTML form controls, if you set the readonly attribute, you don't need to include aria-readonly="true".
+Note: The value of <input type="checkbox"> can not be edited making readonly not relevant. However, when creating checkboxes with role="checkbox" the aria-readonly attribute is supported.
+Values
+true
+
+The element is readonly.
+false (default)
+
+The element is not readonly.
+Associated interfaces
+Element.ariaReadOnly
+
+The ariaReadOnly property, part of the Element interface, reflects the value of the aria-readonly attribute.
+ElementInternals.ariaReadOnly
+
+The ariaReadOnly property, part of the ElementInternals interface, reflects the value of the aria-readonly attribute.
+Associated roles
+
+Used in roles:
+
+checkbox
+combobox
+grid
+gridcell
+listbox
+radiogroup
+slider
+spinbutton
+textbox
+
+Inherited into roles:
+
+columnheader
+rowheader
+searchbox
+switch
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-relevant
+
+Used in ARIA live regions, the global aria-relevant attribute indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified.
+
+Description
+
+ARIA live regions are areas of a web page that are updated when user's attention may be elsewhere. When an update is outside of the user's keyboard focus, assistive technologies such as screen readers use a live region area to report updates to the user.
+Examples of live regions include news marquees, stock tickers, chat windows, and score boards. These update without user interaction. Some updates are important for the user to know about. They're relevant. Others are not. The aria-relevant is used to describe what types of changes have occurred to an aria-live region, and which are relevant and should be announced.
+The value is a space-separated list of change types, including additions, removals, and text, with a shorthand all meaning all three.
+When aria-relevant is not defined, the value is inherited from the nearest ancestor with a defined value. Inherited values are not additive; the value provided on a descendant element completely overrides any inherited value from an ancestor element. When a live region doesn't have an aria-relevant attribute set and has no ancestor with it set, it defaults to additions text, which means element nodes are added to the accessibility tree within the live region, AND text content or a text alternative is added to any descendant in the accessibility tree of the live region. This is because generally text modifications and node additions are relevant, but node removals are not.
+While not a supported value, if the value of none makes the most sense, it should not be a live region.
+The values of removals and all should be used sparingly. For example, when a goal happens in the World Cup, the new score (the addition) is important, the old value (the removal) is not. Assistive technologies only need to be informed of content removal when its removal represents an important change, such as a when a player is taken out of the game.
+Values
+additions
+
+Element nodes are added to the accessibility tree within the live region.
+all
+
+Shorthand for additions removals text.
+removals
+
+Text content, a text alternative, or an element node within the live region is removed from the accessibility tree.
+text
+
+Text content or a text alternative is added to any descendant in the accessibility tree of the live region.
+Associated interfaces
+Element.ariaRelevant
+
+The ariaRelevant property, part of the Element interface, reflects the value of the aria-relevant attribute.
+ElementInternals.ariaRelevant
+
+The ariaRelevant property, part of the ElementInternals interface, reflects the value of the aria-relevant attribute.
+Associated roles
+
+Used in ALL roles.
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-required
+
+The aria-required attribute indicates that user input is required on the element before a form may be submitted.
+
+Description
+
+When a semantic HTML <input>, <select>, or <textarea> must have a value, it should have the required attribute applied to it. The HTML required attribute disables submitting the form unless the required form controls have valid values, while ensuring those navigating with the aid of assistive technologies understand which semantic form controls need valid content.
+When form controls are created using non-semantic elements, such as a <div> with a role of checkbox, the aria-required attribute should be included, with a value of true, to indicate to assistive technologies that user input is required on the element for the form to be submittable. The aria-required attribute can be used with HTML form elements; it is not limited to elements that have an ARIA role assigned.
+Similar to the HTML required attribute set on semantic HTML form controls, the aria-required attribute explicitly conveys to assistive technologies that the element is required before a form may be submitted. The required attribute on a semantic HTML form control will prevent the form control from being submitted if no value is present — providing native error messaging in some browsers if a required value is invalid when the user attempts to submit the form. The aria-required attribute, like all ARIA states and properties, has no impact on element functionality. Functionality and behavior must be added in with JavaScript.
+Note: ARIA only modifies the accessibility tree, modifying how assistive technology presents content to users. ARIA does not change anything about an element's function or behavior. When not using semantic HTML elements for their intended purpose and default functionality, you must use JavaScript to manage behavior, focus, and ARIA states.
+The CSS :required and :optional pseudoclasses match <input>, <select>, and <textarea> elements based on whether they are required or optional, respectively. When using non-semantic elements as form controls, you don't get this CSS pseudoclass selector benefit. You can, however, use attribute selectors if the attribute is present: [aria-required="true"] or [aria-required="false"].
+If a form contains both required and optional form elements, the required elements should be indicated visually using a treatment that does not rely solely on color to convey meaning. Typically, descriptive text and/or an icon are used.
+Note: Which elements are required should be apparent to all users. Ensure the visual presentation indicates the form control is required in a consistent, visible manner, remembering that color is not enough to convey information.
+Examples
+
+The attribute should be added to the form-control role. If the user needs to fill in an email address textbox, include aria-required="true" on the textbox.
+HTML
+Copy to Clipboard
+<div id="tbLabel">Email Address *</div>
+<div
+  role="textbox"
+  contenteditable
+  aria-labelledby="tblabel"
+  aria-required="true"
+  id="email1"></div>
+
+
+Note: If the field's label already contains the word "required", it is recommended to leave out the aria-required attribute. This avoids that screen readers read out the term "required" twice.
+In this example, JavaScript must be used to prevent the containing form from being submitted if the textbox has no content.
+This could be written semantically, without the need for JavaScript:
+
+HTML
+Copy to Clipboard
+<label for="email1">Email Address (required)</label>
+<input type="email" id="email1" required />
+
+Values
+true
+
+The element requires a value or must be checked for the form to be submittable.
+false
+
+The element is not required.
+Associated interfaces
+Element.ariaRequired
+
+The ariaRequired property, part of the Element interface, reflects the value of the aria-required attribute.
+ElementInternals.ariaRequired
+
+The ariaRequired property, part of the ElementInternals interface, reflects the value of the aria-required attribute.
+Associated roles
+
+Used in roles:
+
+checkbox
+combobox
+gridcell
+listbox
+radiogroup
+spinbutton
+textbox
+tree
+
+Inherits into roles:
+
+columnheader
+rowheader
+searchbox
+switch
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-roledescription
+
+The aria-roledescription attribute defines a human-readable, author-localized description for the role of an element.
+
+Description
+
+Some assistive technologies (AT), such as screen readers, present the role of an element as part of the user experience. The aria-roledescription attribute provides a way to define a different human-readable name to be presented by AT as the role of an element.
+Note: Only use aria-roledescription to clarify the purpose of non-interactive container roles and to provide a more specific description to a widget.
+Users depend on the presentation of known role name to understand the purpose of the element and, if it is a widget, how to interact with it. So, only use aria-roledescription to clarify the purpose of non-interactive container roles like group or region and to provide a more specific description to a widget.
+The aria-roledescription property overrides how ATs localize and express the name of a role. When you override a role name the user understands, you can potentially negatively impact a users' ability to understand and interact with an element.
+Avoid using the aria-roledescription attribute. When a use case appears special worthy of a unique roledescription, the interactions can often times be broken down into smaller pieces that have relevant roles.
+When there are no semantic or ARIA widget roles that correspond to the interaction model of your widget, use role="application", provide an aria-roledescription with a human-readable, author-localized customized role name, and use aria-describedby to provide user instructions.
+ATs may customize and localize the names of ARIA roles. If you are using aria-roledescription to change how the role name is presented to the user, remember to handle localization. The value should be translated when a page is localized.
+Changing how the role is presented to the user has no impact on the functionality of the element. For example, if an element has a role of region or button when AT provides functions for navigating to the next region or button, if you set the aria-roledescription to continent and escape respectively, the AT will still allow those functions to navigate to regions and buttons.
+Again, avoid using aria-roledescription. In this example, escape has no relevant meaning to the user, but button with "escape" as a label does.
+When using aria-roledescription, also ensure that the element to which it is applied has a valid ARIA role or has implicit role semantics and that the value itself is not empty and contains more than just whitespace characters.
+The aria-roledescription is required when using aria-brailleroledescription. Note that, in general, aria-brailleroledescription should only be used in rare cases when a aria-roledescription is excessively verbose when rendered in Braille.
+Examples
+
+The following example shows the use of aria-roledescription to indicate that a non-interactive container is a "slide" in a web-based presentation application.
+HTML
+Copy to Clipboard
+<div
+  role="article"
+  aria-roledescription="slide"
+  id="slide"
+  aria-labelledby="slideheading">
+  <h1 id="slideheading">Quarterly Report</h1>
+  <!-- remaining slide contents -->
+</div>
+
+
+In the previous examples, a screen reader user may hear "Quarterly Report, slide" rather than the less precise "Quarterly Report, article".
+Values
+<string>
+
+A non-empty string, an unconstrained value type, containing more than just white space.
+Associated interfaces
+Element.ariaRoleDescription
+
+The ariaRoleDescription property, part of the Element interface, reflects the value of the aria-roledescription attribute.
+ElementInternals.ariaRoleDescription
+
+The ariaRoleDescription property, part of the ElementInternals interface, reflects the value of the aria-roledescription attribute.
+Associated roles
+
+Supported by all roles and by all base markup elements except for role="generic".
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-rowcount
+
+The aria-rowcount attribute defines the total number of rows in a table, grid, or treegrid.
+
+Description
+
+Some tables have hundreds, even millions, of rows. Even for tables with fewer rows, loading only a subsection of rows may be a design requirement, improve performance, or improve user experience. When only a subset of rows are loaded, you do need to let all users know that only a subset of the data is being displayed. The aria-rowcount attribute is used to define the total number of rows in a table, grid, or treegrid.
+Included on the <table> element or on an element with a role of table, the value is the number of rows in the full table, as an integer. If the total number of rows is not known, include aria-rowcount="-1", which tells the browser to not count the total number of rows.
+If all of the rows are loaded and in the DOM, you don't need to include aria-rowcount as browsers automatically count the total number of rows. However, if the rows aren't all present in the DOM at any time, this attribute is needed to provide the number of rows when the full table size is known and to tell the browser to not automatically count the rows when the total number of rows is not known.
+Example
+
+The following example shows a grid with 24 rows, of which the first row and rows 7 through 9 are displayed to the user.
+HTML
+Copy to Clipboard
+<div role="grid" aria-rowcount="24">
+  <div role="rowgroup">
+    <div role="row" aria-rowindex="1">
+      <span role="columnheader">First Name</span>
+      <span role="columnheader">Last Name</span>
+      <span role="columnheader">Position</span>
+    </div>
+  </div>
+  <div role="rowgroup">
+    <div role="row" aria-rowindex="7">
+      <span role="gridcell">Morgan</span>
+      <span role="gridcell">Brian</span>
+      <span role="gridcell">Midfielder</span>
+    </div>
+    <div role="row" aria-rowindex="8">
+      <span role="gridcell">Abby</span>
+      <span role="gridcell">Dahlkemper</span>
+      <span role="gridcell">Defender</span>
+    </div>
+    <div role="row" aria-rowindex="9">
+      <span role="gridcell">Ashlyn</span>
+      <span role="gridcell">Harris</span>
+      <span role="gridcell">Goalkeeper</span>
+    </div>
+  </div>
+</div>
+
+Values
+<integer>
+
+The number of rows in the full table or -1 is the table size is not known.
+Associated interfaces
+Element.ariaRowCount
+
+The ariaRowCount property, part of the Element interface, reflects the value of the aria-rowcount attribute.
+ElementInternals.ariaRowCount
+
+The ariaRowCount property, part of the ElementInternals interface, reflects the value of the aria-rowcount attribute.
+Associated roles
+
+Used in roles:
+
+table
+
+Inherited into roles:
+
+grid
+treegrid
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-rowindex
+
+The aria-rowindex attribute defines an element's position with respect to the total number of rows within a table, grid, or treegrid.
+
+Description
+
+Some tables have many, many rows. Loading only a subsection of rows may be done as a design requirement, to improve performance, or to improve user experience.
+When only a subset of rows are loaded, you do need to let all users know which subsets of rows are being displayed. The aria-rowindex attribute is used to define the cell or row's row index or position with respect to the total number of rows within a table, grid, or treegrid.
+Included on the <tr> element or on an element with a role of row, or directly on the <td>, <th>, or element with role of cell or gridcell, the value is the row's position with respect to the full table.
+The value for aria-rowindex is an integer greater than or equal to 1, greater than the aria-rowindex value of any previous rows, and less than or equal to the number of rows in the full table.
+If all of the rows are loaded and in the DOM, you don't need to include aria-rowindex as browsers automatically calculate the index of each row. However, when only a subset of the rows are present in the DOM, aria-rowindex is needed to indicate each row's position with respect to the full table. If only a subset of rows are loaded, you also need to include aria-rowcount on the table ancestor, even if you don't know the total rowcount.
+If the table with only a subset of rows has a cell that spans more than one row, both the row and cell need to have the aria-rowindex set. If a cell spans more than one row－when a cell role includes the aria-rowspan attribute or HTML cell has a rowspan attribute set to a value greater than 1－include the row's aria-rowindex value on the spanning cell in addition to the appropriate row spanning attribute. The value should be the row index of the row where the span starts.
+Note: The aria-rowindex must be added to each row, but is optional on the cells, except for cells that span rows: the aria-rowindex attribute is required on all spanning cells.
+Examples
+
+The following example shows a grid with 24 rows, of which the first row and rows 7 through 10 are displayed to the user. The last "position" cell spans column 9 and 10.
+HTML
+Copy to Clipboard
+<div role="grid" aria-rowcount="24">
+  <div role="rowgroup">
+    <div role="row" aria-rowindex="1">
+      <span role="columnheader">First Name</span>
+      <span role="columnheader">Last Name</span>
+      <span role="columnheader">Position</span>
+    </div>
+  </div>
+  <div role="rowgroup">
+    <div role="row" aria-rowindex="7">
+      <span role="gridcell">Morgan</span>
+      <span role="gridcell">Brian</span>
+      <span role="gridcell">Midfielder</span>
+    </div>
+    <div role="row" aria-rowindex="8">
+      <span role="gridcell">Abby</span>
+      <span role="gridcell">Dahlkemper</span>
+      <span role="gridcell">Defender</span>
+    </div>
+    <div role="row" aria-rowindex="9">
+      <span role="gridcell">Ashlyn</span>
+      <span role="gridcell">Harris</span>
+      <span role="gridcell" aria-rowspan="2" aria-rowindex="9">Goalkeeper</span>
+    </div>
+    <div role="row" aria-rowindex="10">
+      <span role="gridcell">Alyssa</span>
+      <span role="gridcell">Naeher</span>
+    </div>
+  </div>
+</div>
+
+
+Note both aria-rowspan and aria-rowindex are present on the Goalkeeper cell, which spans two rows.
+Values
+<integer>
+
+An integer greater than or equal to 1, greater than the aria-rowindex of the previous row, if any, and less than or equal to the value of aria-rowcount.
+Associated interfaces
+Element.ariaRowIndex
+
+The ariaRowIndex property, part of the Element interface, reflects the value of the aria-rowindex attribute.
+ElementInternals.ariaRowIndex
+
+The ariaRowIndex property, part of the ElementInternals interface, reflects the value of the aria-rowindex attribute.
+Associated roles
+
+Used in roles:
+
+cell
+row
+
+Inherited into roles:
+
+columnheader
+gridcell
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-rowindextext
+
+The aria-rowindextext attribute defines a human-readable text alternative of aria-rowindex.
+
+Description
+
+When you have a very long table or when you purposefully want to display just a section of a table, not all rows may be present in the DOM. When this happens, we use the aria-rowcount with an integer value to define how many rows the table (or grid) would have if all the rows were present and add the aria-rowindex property on each row and spanning cell to provide information on the row index within that larger table. When the value of aria-rowindex is not meaningful or does not reflect the displayed index, we can also add the aria-rowindextext to provide a human-readable text alternative to the aria-rowindex integer value.
+The aria-rowindextext should only be included in addition to, not as a replacement of, the aria-rowindex. Some assistive technologies use the numeric row index for the purpose of keeping track of the user's position or providing alternative table navigation. The aria-rowindextext is useful if that integer value isn't meaningful or does not reflect the displayed index, such as a game of Chess or Battleship.
+The aria-rowindextext is added to each <tr> or to elements with the row role. It can also be addition to cells or owned elements of each row.
+Values
+<string>
+The human-readable text alternative of the numeric aria-rowindex
+
+Associated interfaces
+Element.ariaRowIndexText
+
+The ariaRowIndexText property, part of the Element interface, reflects the value of the aria-rowindextext attribute.
+ElementInternals.ariaRowIndexText
+
+The ariaRowIndexText property, part of the ElementInternals interface, reflects the value of the aria-rowindextext attribute.
+Associated roles
+
+Used in roles:
+
+cell
+row
+
+Inherited into roles:
+
+columnheader
+gridcell
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-rowspan
+
+The aria-rowspan attribute defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
+
+Description
+
+Similar to the rowspan attribute of the <td> and <th> elements, but for cells and gridcells which are not contained in a native table, the aria-rowspan attribute defines the number of rows spanned by a cell or gridcell within a table, grid, or treegrid.
+This attribute is intended for cells and gridcells which are not part of an HTML <table>. When a cell is nested in a semantic <table>, the rowspan attribute should be used when a or spans more than one row. If both are present, rowspan takes precedence over aria-rowspan. But, like all ARIA attributes, aria-rowspan only impacts the accessibility tree. It doesn't change your layout.
+Note: ARIA modifies the accessibility tree and how assistive technology presents content to your users. ARIA doesn't change anything about an element's function, behavior, or appearance. When using non-semantic elements, you must use CSS to manage layout and appearance.
+The value of aria-rowspan is an integer greater than or equal to 0 and less than the value which would cause the cell or gridcell to overlap the next cell or gridcell in the same column. Setting the value to 0 indicates that the cell or gridcell is to span all the remaining rows in the row group. The default value is 1.
+Values
+<integer>
+
+An integer greater than or equal to 0 and less than would cause a cell to overlap the next cell in the same column.
+Associated interfaces
+Element.ariaRowSpan
+
+The ariaRowSpan property, part of the Element interface, reflects the value of the aria-rowspan attribute.
+ElementInternals.ariaRowSpan
+
+The ariaRowSpan property, part of the ElementInternals interface, reflects the value of the aria-rowspan attribute.
+Associated roles
+
+Used in roles:
+
+cell
+
+Inherited into roles:
+
+columnheader
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-selected
+
+The aria-selected attribute indicates the current "selected" state of various widgets.
+
+Description
+
+The aria-selected attribute indicates the current "selected" state for gridcell, option, row and tab roles.
+This attribute is used to indicate which elements within single-selection and multiple-selection composite widgets are selected. If more than one element is selectable at a time, include aria-multiselectable="true" on the grid, listbox, tablist, or other owning role, while including aria-selected only on the selectable cells, options, and tabs.
+For other roles, the currently selected state is set with aria-current, or possibly aria-checked or aria-pressed, depending on the role.
+Widgets that support both aria-selected and aria-current at the same time have different meanings for each. For example, aria-current="page" can be used in a navigation tree to indicate which page is currently displayed, while aria-selected="true" indicates which page will be displayed if the user activates the treeitem.
+Grid
+
+Setting aria-selected="false" on a focusable gridcell indicates the cell is selectable. If the grid allows more than one gridcell to be selected at a time, set aria-multiselectable="true" on the element with role grid. Setting aria-selected on a column or row header gridcell does not propagate the state to other cells in the column or row.
+Option
+
+Both aria-selected and aria-checked are valid for option. Some user interfaces indicate selection with aria-selected in single-select list boxes and with aria-checked in multi-select list boxes.
+Don't specify both aria-selected and aria-checked on option elements contained by the same listbox unless the meaning and purpose of aria-selected is different from the meaning and purpose of aria-checked in the user interface, the meaning and purpose of each state apparent, and the UI provides separate methods for controlling each state.
+Row
+
+The aria-selected attribute is supported on row but not column. If a grid supports selection, when a cell or row is selected, the selected element has aria-selected="true" set.
+If the grid supports column selection and a column is selected, all cells in the column have aria-selected set to true.
+Tab
+
+In a tablist, aria-selected is used on a tab to indicate the currently-displayed tabpanel.
+The selected tab in a tablist should have the attribute aria-selected="true" set. All inactive tabs in the tablist should have aria-selected="false" set. Setting the state only impacts the accessibility tree: make sure to style the active tab in a way that visual indicates it's selected state. The default value for aria-selected on a tab role is false.
+If more than one tab is selectable at a time, include aria-multiselectable on the tablist.
+Examples
+
+In this tablist example, the first tab is selected:
+
+HTML
+Copy to Clipboard
+<div class="tab-interface">
+  <div role="tablist" aria-label="Sample Tabs">
+    <span
+      role="tab"
+      aria-selected="true"
+      aria-controls="panel-1"
+      id="tab-1"
+      tabindex="0">
+      First Tab
+    </span>
+    <span
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-2"
+      id="tab-2"
+      tabindex="-1">
+      Second Tab
+    </span>
+    <span
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-3"
+      id="tab-3"
+      tabindex="-1">
+      Third Tab
+    </span>
+  </div>
+  <div id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
+    <p>Content for the first panel</p>
+  </div>
+  <div id="panel-2" role="tabpanel" tabindex="0" aria-labelledby="tab-2" hidden>
+    <p>Content for the second panel</p>
+  </div>
+  <div id="panel-3" role="tabpanel" tabindex="0" aria-labelledby="tab-3" hidden>
+    <p>Content for the third panel</p>
+  </div>
+</div>
+
+
+Note: ARIA only modifies the accessibility tree for an element and how assistive technology presents the content to users. ARIA doesn't change anything about an element's function or behavior.
+Values
+true
+
+The selectable element is selected.
+false
+
+The selectable element is not selected. Implicit default for tab.
+undefined (default)
+
+The element is not selectable.
+Associated interfaces
+Element.ariaSelected
+
+The ariaSelected property, part of the Element interface, reflects the value of the aria-selected attribute.
+ElementInternals.ariaSelected
+
+The ariaSelected property, part of the ElementInternals interface, reflects the value of the aria-selected attribute.
+Associated roles
+
+Used in roles:
+
+gridcell
+option
+row
+tab
+
+Inherited into roles:
+
+columnheader
+rowheader
+treeitem
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-setsize
+
+The aria-setsize attribute defines the number of items in the current set of listitems or treeitems when not all items in the set are present in the DOM.
+
+Description
+
+Browsers automatically calculate the set size and position for each item in a group of items, like the number of <li>s in a list, buttons in a same-named group of radio buttons, and <option>s in a <select>. Assistive technologies, like screen readers, take advantage of this state management to report set sizes to the user.
+When the DOM is not complete, the browser calculation of the number of items in a set can be incorrect. When only a subset of items, such as list items, are loaded into the DOM, the browser calculates the number of items based only on those present. The aria-setsize attribute should be used to override the browser's incorrect count. It defines the number of items in the current set of listitems or treeitems had the entire set been loaded.
+aria-setsize attribute is set on each item, rather than on any containing element. The value is the same for each item: an integer reflecting number of items in the complete set, or -1 if the set size is unknown. If all the items are present in the DOM, the browser can calculate the set size and the position of each item, making both aria-setsize and aria-posinset unnecessary.
+Elements with the aria-setsize generally have the aria-posinset attribute included as well to indicate the position of that item within the set. The aria-posinset value is between 1 and the positive value of aria-setsize.
+For example, in a page's comments section, When comments in are not all in the DOM, such as when comments are paginated, the level, total number of comments, and position of each comment should be set with ARIA. The hierarchical level of comments can be indicated with aria-level. Group positional information is indicated with aria-posinset and aria-setsize.
+When a feed has a static number of articles, aria-setsize can be added to each article element with the value being either the total number of articles loaded or the total number in the feed. The value chosen depends on which value is most helpful to users. If the number of articles is extremely large, indefinite, or changes often, aria-setsize="-1" can be set to communicate the size of the set is unknown.
+In a listbox, when the complete set of available options is not present in the DOM due to dynamic loading on scroll, both aria-setsize and aria-posinset can be set on each option.
+In a tree view, if the complete set of available nodes is not present in the DOM due to dynamic loading as the user moves focus in or scrolls the tree, each node has aria-level, aria-setsize, and aria-posinset set.
+In a menu, aria-setsize is set on all menuitem, menuitemcheckbox, or menuitemradio roles, with the value being the total number of items in the menu, excluding any separators.
+Example
+
+The following example shows items 5 through 8 in a set of 16.
+HTML
+Copy to Clipboard
+<h2 id="label_fruit">Available Fruit</h2>
+<ul role="listbox" aria-labelledby="label_fruit">
+  <li role="option" aria-setsize="16" aria-posinset="5">apples</li>
+  <li role="option" aria-setsize="16" aria-posinset="6">bananas</li>
+  <li role="option" aria-setsize="16" aria-posinset="7">cantaloupes</li>
+  <li role="option" aria-setsize="16" aria-posinset="8">dates</li>
+</ul>
+
+
+To orient the user, assistive technologies would list the bananas above as "item 6 out of 16."
+
+Values
+<integer>
+
+The number of items in the full set or -1 is the set size is unknown.
+Associated interfaces
+Element.ariaSetSize
+
+The ariaSetSize property, part of the Element interface, reflects the value of the aria-setsize attribute.
+ElementInternals.ariaSetSize
+
+The ariaSetSize property, part of the ElementInternals interface, reflects the value of the aria-setsize attribute.
+Associated roles
+
+Used in roles:
+
+article
+associationlistitemkey
+associationlistitemvalue
+comment
+listitem
+menuitem
+option
+radio
+row
+tab
+
+Inherits into roles:
+
+comment
+menuitemcheckbox
+menuitemradio
+treeitem
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-sort
+
+The aria-sort attribute indicates if items in a table or grid are sorted in ascending or descending order.
+
+Description
+
+If a grid or table provides sort functionality, the aria-sort attribute should be set to either ascending or descending (or other) on the header cell element for the sorted column or row.
+The aria-sort attribute is only set on the currently sorted column or row. Set aria-sort="ascending" to indicate the data cells in the column or row are sorted in ascending order. If the sort order is reversed, toggle the value to aria-sort="descending". When a different column or row becomes sorted, the single aria-sort attribute is moved to the header cell for the newly sorted column or row with the appropriate value for the sort order.
+The aria-sort attribute should only be added to a single table or grid header at a time. The attribute is set to inform assistive technology users which column or row is sorted. It doesn't have any impact on the actual sort order.
+Examples
+
+This table loads with the last name column sorted in ascending order.
+HTML
+Copy to Clipboard
+<table>
+  <caption>
+    Steering Committee Members
+  </caption>
+  <thead>
+    <tr>
+      <th>
+        <button>First Name</button>
+      </th>
+      <th aria-sort="ascending">
+        <button>Last Name</button>
+      </th>
+      <th>
+        <button>Company</button>
+      </th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    …
+  </tbody>
+</table>
+
+
+If a user clicks on the Last Name button, aria-pressed="true" would be added to the <button> element and the aria-sort value would be toggled to "descending" with JavaScript. If the user clicks on a different header button, the aria-sort would be removed from the Last Name header to be placed on the clicked button's <th> parent.
+We provided instructions in the caption for assistive technology who may not see the down arrows that we would add with CSS targeting the th[aria-sort="ascending"] and th[aria-sort="descending"] selectors.
+Values
+ascending
+
+Items are sorted in ascending order by this column.
+descending
+
+Items are sorted in descending order by this column.
+none (default)
+
+There is no defined sort applied to the column.
+other
+
+A sorting algorithm other than ascending or descending has been applied.
+Associated interfaces
+Element.ariaSort
+
+The ariaSort property, part of the Element interface, reflects the value of the aria-sort attribute.
+ElementInternals.ariaSort
+
+The ariaSort property, part of the ElementInternals interface, reflects the value of the aria-sort attribute.
+Associated roles
+
+Used in roles:
+
+columnheader
+rowheader
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-valuemax
+
+The aria-valuemax attribute defines the maximum allowed value for a range widget.
+
+Description
+
+The aria-valuemax attribute defines the maximum value allowed for range widgets. It is similar to the max attribute of <progress>, <meter>, and <input> of type range, number and all the date-time types.
+When creating a range type role, including meter, scrollbar, slider, and spinbutton on a non-semantic element, the aria-valuemax enables defining a maximum that is more than the minimum value and is a required attribute of slider, scrollbar and spinbutton.
+Declaring the minimum and maximum values allows assistive technologies to convey the size of the range to users. The minimum value is defined with aria-valuemin.
+Warning: The range role itself should NOT be used as it is an "abstract". The aria-valuemax attribute is used on all of the range roles subtypes.
+Example
+
+The code below shows a simple slider with a maximum value of 9.
+HTML
+Copy to Clipboard
+<div id="dimesLabel">Dimes</div>
+<div
+  role="slider"
+  aria-valuenow="0"
+  aria-valuemin="0"
+  aria-valuemax="9"
+  aria-labelledby="dimesLabel"
+  id="dimes"></div>
+
+Values
+<number>
+
+An integer or decimal number that is greater than the minimum value.
+Associated interfaces
+Element.ariaValueMax
+
+The ariaValueMax property, part of the Element interface, reflects the value of the aria-valuemax attribute.
+ElementInternals.ariaValueMax
+
+The ariaValueMax property, part of the ElementInternals interface, reflects the value of the aria-valuemax attribute.
+Associated roles
+
+Used in roles:
+
+meter
+scrollbar (required)
+separator
+slider (required)
+spinbutton (required)
+
+Inherited into roles:
+
+meter
+progressbar
+scrollbar
+slider
+spinbutton
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-valuemin
+
+The aria-valuemin attribute defines the minimum allowed value for a range widget.
+
+Description
+
+The aria-valuemin attribute defines the minimum value allowed for range widgets. It is similar to the min attribute of <progress>, <meter>, and <input> of type range, number and all the date-time types.
+When creating a range type role, including meter, scrollbar, slider, and spinbutton on a non-semantic element, the aria-valuemin enables defining a minimum that is less than the maximum value and is a required attribute of slider, scrollbar and spinbutton.
+Declaring the minimum and maximum values allows assistive technologies to convey the size of the range to users.
+The maximum value is defined with aria-valuemax.
+Warning: The range role itself should NOT be used as it is an "abstract". The aria-valuemin attribute is used on all of the range roles subtypes.
+Values
+<number>
+
+A decimal number, below the maximum value.
+Associated interfaces
+Element.ariaValueMin
+
+The ariaValueMin property, part of the Element interface, reflects the value of the aria-valuemin attribute.
+ElementInternals.ariaValueMin
+
+The ariaValueMin property, part of the ElementInternals interface, reflects the value of the aria-valuemin attribute.
+Associated roles
+
+Used in roles:
+
+meter
+scrollbar
+separator
+slider
+spinbutton
+
+Inherited into roles:
+
+meter
+progressbar
+scrollbar
+slider
+spinbutton
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-valuenow
+
+The aria-valuenow attribute defines the current value for a range widget.
+
+Description
+
+The aria-valuenow attribute defines the current value for range widgets. It is similar to the value attribute of <progress>, <meter>, and <input> of type range, number and all the date-time types.
+When creating a range type role, including meter, scrollbar, slider, and spinbutton on a non-semantic element, the aria-valuenow enables defining a current numeric value between the minimum and maximum values. The minimum and maximum values are defined with aria-valuemin and aria-valuemax.
+Warning: The range role itself should NOT be used as it is an "abstract". The aria-valuenow attribute is used on all of the range roles subtypes.
+HTML
+Copy to Clipboard
+<p id="birthyearLabel">What year were you born?</p>
+<div
+  role="spinbutton"
+  tabindex="-1"
+  aria-valuenow="1984"
+  aria-valuemin="1900"
+  aria-valuemax="2021"
+  aria-labelledby="birthyearLabel">
+  <span class="value"> 1984 </span>
+  <span role="button">
+    <span aria-hidden="true">+</span>
+    Increment year by 1
+  </span>
+  <span role="button">
+    <span aria-hidden="true">-</span>
+    Decrement year by 1
+  </span>
+</div>
+
+
+Use semantic HTML elements when you can:
+
+HTML
+Copy to Clipboard
+<label for="birthyear">What year were you born?</label>
+<input type="number" id="birthyear" value="1984" min="1900" max="2021" />
+
+
+If there is no known value, like when a progress bar is in an indeterminate state, don't set an aria-valuenow attribute.
+When there is no aria-valuenow set, no information is implied about a current value.
+When used with sliders and spinbuttons, assistive technologies announce the actual value to users.
+When used with progressbar and scrollbar, assistive technologies announce the value to users as a percent. When aria-valuemin and aria-valuemax are both defined, the percent value is calculated as a position on the range. Otherwise, the actual value is announced as a percent.
+When the value to be announced, either the actual value or the value as a percent, may not be clear to users, the aria-valuetext attribute should be used to provide a user-friendly representation of the value. When set, the valuetext string is announced instead of the valuenow numeric value. For example, if a slider represents the days of the week, so the day of the week's aria-valuenow is a number, the aria-valuetext property should be set to a string that makes the slider value understandable, such as "Monday".
+Examples
+HTML
+Copy to Clipboard
+<p id="temperatureLabel">Oven Temperature</p>
+<div
+  role="meter"
+  id="temperature"
+  aria-valuenow="205"
+  aria-valuemin="70"
+  aria-valuemax="250"
+  aria-labelledby="temperatureLabel">
+  <div class="meter-color" aria-hidden="true"></div>
+</div>
+
+
+The first rule of ARIA use is "if you can use a native feature with the semantics and behavior you require already built in, instead of repurposing an element and adding an ARIA role, state or property to make it accessible, then do so."
+
+HTML
+Copy to Clipboard
+<label for="temperature">Oven Temperature</label>
+<input type="range" id="temperature" value="205" min="70" max="250" step="5" />
+
+
+If we employ native HTML semantics with <input> we get styles and semantics for free.
+Values
+<number>
+
+A decimal number, between the minimum and maximum values.
+Associated interfaces
+Element.ariaValueNow
+
+The ariaValueNow property, part of the Element interface, reflects the value of the aria-valuenow attribute.
+ElementInternals.ariaValueNow
+
+The ariaValueNow property, part of the ElementInternals interface, reflects the value of the aria-valuenow attribute.
+Associated roles
+
+Used in roles:
+
+meter
+scrollbar
+separator
+slider
+spinbutton
+
+Inherited into roles:
+
+meter
+progressbar
+scrollbar
+slider
+spinbutton
+
+
+--------------------------------------------------
+
+ARIA role/attribute name: aria-valuetext
+
+The aria-valuetext attribute defines the human-readable text alternative of aria-valuenow for a range widget.
+
+Description
+
+Numbers — even percentages — aren't always user-friendly. Assistive technologies present aria-valuenow as numeric values. If a progress bar is at 8%, what does that mean? aria-valuetext provides a way of presenting the current value in a more user-friendly, human-understandable way. For example, a battery meter value might be conveyed as aria-valuetext="8% (34 minutes) remaining".
+The aria-valuetext attribute is used with the aria-valuenow attribute, not instead of it, unless that value is not known.
+aria-valuetext is only needed when the numeric value of aria-valuenow is not meaningful. For example, a range's values are numeric but may be used for non-numeric values, such as college class level. The values of aria-valuenow for a 4-year college could range from 1 through 4, which indicate the position of each value in the value space. In this case, the aria-valuetext could be one of the strings: "first year", "sophomore", "junior", and "senior".
+If the numeric value is meaningful, such as a spinner with aria-valuenow="3" for how many pizza slices you want to order, aria-valuetext is not needed.
+When both the aria-valuetext and aria-valuenow are included, the aria-valuetext is announced. When there is no aria-valuetext attribute, assistive technologies will announce the aria-valuenow attribute for the current value.
+Values
+<string>
+
+A human-readable text alternative of the aria-valuenow value.
+Associated interfaces
+Element.ariaValueText
+
+The ariaValueText property, part of the Element interface, reflects the value of the aria-valuetext attribute.
+ElementInternals.ariaValueText
+
+The ariaValueText property, part of the ElementInternals interface, reflects the value of the aria-valuetext attribute.
+Associated roles
+
+Used in roles:
+
+range
+separator
+spinbutton
+
+Inherited into roles:
+
+meter
+progressbar
+scrollbar
+slider
+spinbutton
+
+
+--------------------------------------------------
+
