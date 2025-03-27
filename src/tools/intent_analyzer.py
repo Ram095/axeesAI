@@ -3,7 +3,7 @@ import json
 import re
 import os
 import logging
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 # Configure logger
 logging.basicConfig(
@@ -33,8 +33,41 @@ class IntentAnalyzer:
             self.logger.error("OpenAI API key not provided")
             raise ValueError("OpenAI API key is required")
         
-        self.client = OpenAI(api_key=self.api_key)
+        self.client = AsyncOpenAI(api_key=self.api_key)
         self.logger.info("IntentAnalyzer initialization complete")
+
+    def _extract_ordinal_number(self, text: str) -> Optional[int]:
+        """
+        Extract ordinal number from text, handling both numeric and word forms.
+        
+        Args:
+            text: Input text containing ordinal number
+            
+        Returns:
+            Extracted number or None if not found
+        """
+        # Dictionary mapping ordinal words to numbers
+        ordinal_words = {
+            'first': 1, 'second': 2, 'third': 3, 'fourth': 4, 'fifth': 5,
+            'sixth': 6, 'seventh': 7, 'eighth': 8, 'ninth': 9, 'tenth': 10
+        }
+        
+        # Pattern for numeric ordinals (1st, 2nd, 3rd, etc.)
+        numeric_pattern = r'(\d+)(?:st|nd|rd|th)'
+        # Pattern for word ordinals (first, second, third, etc.)
+        word_pattern = r'\b(' + '|'.join(ordinal_words.keys()) + r')\b'
+        
+        # Try numeric pattern first
+        numeric_match = re.search(numeric_pattern, text.lower())
+        if numeric_match:
+            return int(numeric_match.group(1))
+        
+        # Try word pattern
+        word_match = re.search(word_pattern, text.lower())
+        if word_match:
+            return ordinal_words[word_match.group(1)]
+        
+        return None
 
     async def analyze_intent(
         self,
@@ -87,7 +120,7 @@ class IntentAnalyzer:
                     user_message += f"\nContext - Previous commands: {', '.join(context['previous_commands'])}"
                     self.logger.debug(f"Added context with previous commands: {context['previous_commands']}")
 
-            # Call OpenAI API
+            # Call OpenAI API (async call)
             self.logger.info("Calling OpenAI API")
             response = await self.client.chat.completions.create(
                 model="gpt-4",
@@ -105,6 +138,12 @@ class IntentAnalyzer:
             result = json.loads(response.choices[0].message.content)
             self.logger.debug(f"Parsed JSON result: {result}")
             
+            # Extract ordinal number if command is 'fix'
+            if result["command"] == "fix":
+                ordinal_number = self._extract_ordinal_number(query)
+                if ordinal_number is not None:
+                    result["metadata"]["issue_number"] = ordinal_number
+            
             # Validate and clean up the response
             cleaned_result = {
                 "command": result["command"],
@@ -112,7 +151,7 @@ class IntentAnalyzer:
                 "confidence": result.get("confidence", 0.7),
                 "metadata": {
                     "url": result.get("metadata", {}).get("url"),
-                    "issue_number": int(result["metadata"]["issue_number"]) if result.get("metadata", {}).get("issue_number") else None,
+                    "issue_number": result.get("metadata", {}).get("issue_number"),
                     "topic": result.get("metadata", {}).get("topic")
                 }
             }
@@ -147,21 +186,38 @@ class IntentAnalyzer:
                 }
             }
 
-        # Fix intent detection
-        issue_match = re.search(r'(?:fix|issue|problem|error|violation|#?)(\d+)', query)
-        if issue_match or any(word in query for word in ['fix', 'repair', 'solve', 'resolve']):
-            issue_num = int(issue_match.group(1)) if issue_match else None
-            self.logger.info(f"Fallback detected 'fix' intent with issue number: {issue_num}")
-            return {
-                "command": "fix",
-                "content": query,
-                "confidence": 0.7,
-                "metadata": {
-                    "url": None,
-                    "issue_number": issue_num,
-                    "topic": None
+        # Fix intent detection with ordinal number support
+        if any(word in query for word in ['fix', 'repair', 'solve', 'resolve']):
+            # Try to extract ordinal number
+            ordinal_number = self._extract_ordinal_number(query)
+            if ordinal_number is not None:
+                self.logger.info(f"Fallback detected 'fix' intent with ordinal number: {ordinal_number}")
+                return {
+                    "command": "fix",
+                    "content": query,
+                    "confidence": 0.7,
+                    "metadata": {
+                        "url": None,
+                        "issue_number": ordinal_number,
+                        "topic": None
+                    }
                 }
-            }
+            
+            # Fallback to numeric pattern if no ordinal found
+            issue_match = re.search(r'(?:fix|issue|problem|error|violation|#?)(\d+)', query)
+            if issue_match:
+                issue_num = int(issue_match.group(1))
+                self.logger.info(f"Fallback detected 'fix' intent with issue number: {issue_num}")
+                return {
+                    "command": "fix",
+                    "content": query,
+                    "confidence": 0.7,
+                    "metadata": {
+                        "url": None,
+                        "issue_number": issue_num,
+                        "topic": None
+                    }
+                }
 
         # Default to explain
         self.logger.info(f"Fallback defaulting to 'explain' intent with topic: {query}")
