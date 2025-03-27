@@ -6,6 +6,19 @@ import { ScanResponse, DetailedScanResults, AccessibilityResponse } from "./type
 
 let extensionContext: vscode.ExtensionContext;
 
+// Helper function to normalize URLs
+function normalizeUrl(url: string): string {
+    // Remove any whitespace
+    url = url.trim();
+    
+    // If URL doesn't start with http:// or https://, add https://
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
+    
+    return url;
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -40,31 +53,13 @@ const handler: vscode.ChatRequestHandler = async (
     try {
         // Check for explicit commands in request.command
         let intentAnalysis;
-        if (request.command === 'scan') {
+        if (request.command === 'scan' || request.command === 'fix' || request.command === 'explain') {
             intentAnalysis = {
-                command: 'scan' as const,
+                command: request.command,
                 content: userQuery.trim(),
                 confidence: 1.0,
                 metadata: {
                     url: userQuery.trim()
-                }
-            };
-        } else if (request.command === 'fix') {
-            intentAnalysis = {
-                command: 'fix' as const,
-                content: userQuery.trim(),
-                confidence: 1.0,
-                metadata: {
-                    issue_number: parseInt(userQuery.trim()) || undefined
-                }
-            };
-        } else if (request.command === 'explain') {
-            intentAnalysis = {
-                command: 'explain' as const,
-                content: userQuery.trim(),
-                confidence: 1.0,
-                metadata: {
-                    topic: userQuery.trim()
                 }
             };
         } else {
@@ -83,24 +78,25 @@ const handler: vscode.ChatRequestHandler = async (
             case "scan":
                 const url = intentAnalysis.metadata?.url || intentAnalysis.content;
                 if (!url) {
-                    stream.markdown("⚠️ Please provide a valid URL to scan. Example: `https://example.com`");
+                    stream.markdown("⚠️ Please provide a valid URL to scan. Example: `example.com`");
                     return;
                 }
 
-                // Validate URL format
+                // Normalize and validate URL
+                const normalizedUrl = normalizeUrl(url);
                 try {
-                    new URL(url);
+                    new URL(normalizedUrl);
                 } catch (e) {
-                    stream.markdown("⚠️ Invalid URL format. Please provide a valid URL including the protocol (http:// or https://)");
+                    stream.markdown("⚠️ Invalid URL format. Please provide a valid domain name or URL.");
                     return;
                 }
 
                 // Show scanning message
-                stream.markdown(`🔍 Scanning ${url} for accessibility issues...`);
+                stream.markdown(`🔍 Scanning ${normalizedUrl} for accessibility issues...`);
 
                 try {
                     // Perform scan and store complete response
-                    const scanResponse = await performAccessibilityScan(apiUrl, apiKey, url);
+                    const scanResponse = await performAccessibilityScan(apiUrl, apiKey, normalizedUrl);
 
                     // Extract and store detailed results
                     detailedScanResults = extractDetailedScanResults(scanResponse);
