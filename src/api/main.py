@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from src.settings import APISettings
+from src.settings.api_settings import APISettings
 from .middleware import SecurityHeadersMiddleware, RequestLoggingMiddleware
 from .routes import health, accessibility
 from .app import create_app
@@ -22,10 +22,15 @@ app.add_middleware(RequestLoggingMiddleware)
 app.include_router(health.router)
 app.include_router(accessibility.router)
 
-if __name__ == "__main__":
+def start():
+    """Start the FastAPI application with uvicorn"""
     uvicorn.run(
         "src.api.main:app",
         host=settings.host,
         port=settings.port,
         reload=False
     )
+
+
+if __name__ == "__main__":
+    start()

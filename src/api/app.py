@@ -5,11 +5,11 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi.responses import JSONResponse
-from ..settings import APISettings
+from .config import get_api_settings, get_rate_limiter, get_openapi_schema
 from .models import ErrorResponse
 
 def create_app() -> tuple[FastAPI, Limiter]:
-    settings = APISettings()
+    settings = get_api_settings()
     
     app = FastAPI(
         title="Accessibility Expert API",
@@ -27,36 +27,17 @@ def create_app() -> tuple[FastAPI, Limiter]:
     
     # Custom OpenAPI schema
     def custom_openapi():
-        if app.openapi_schema:
-            return app.openapi_schema
-        openapi_schema = get_openapi(
-            title=app.title,
-            version=app.version,
-            description=app.description,
-            routes=app.routes,
-        )
-        # Add security schemes
-        openapi_schema["components"] = {
-            "securitySchemes": {
-                "ApiKeyHeader": {
-                    "type": "apiKey",
-                    "in": "header",
-                    "name": "X-Open-API-Key"
-                }
-            }
-        }
-        openapi_schema["security"] = [{"ApiKeyHeader": []}]
-        app.openapi_schema = openapi_schema
+        app.openapi_schema = get_openapi_schema(app)
         return app.openapi_schema
 
     app.openapi = custom_openapi
     
     # Rate limiting setup
-    limiter = Limiter(key_func=get_remote_address)
+    limiter = get_rate_limiter()
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-    # Add CORS middleware with configurable origins
+    # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
