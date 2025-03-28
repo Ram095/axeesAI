@@ -85,3 +85,53 @@ function getSeverityIcon(severity: string): string {
             return "⚪";
     }
 }
+
+export interface IntentAnalysisResult {
+    command: 'scan' | 'fix' | 'explain';
+    content: string;
+    confidence: number;
+    metadata: {
+        url?: string;
+        issue_number?: number;
+        topic?: string;
+    };
+}
+
+export async function analyzeIntent(
+    apiUrl: string,
+    apiKey: string,
+    query: string,
+    context?: { scan_results?: string[]; previous_commands?: string[] }
+): Promise<IntentAnalysisResult> {
+    if (!apiKey) {
+        throw new Error("API key not configured. Please set your API key in the extension settings.");
+    }
+    if (!apiUrl) {
+        throw new Error("API URL not configured. Please set your API URL in the extension settings.");
+    }
+    try {
+        const response = await axios.post<IntentAnalysisResult>(
+            `${apiUrl}/api/accessibility/analyze-intent`,
+            { query, context },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Open-API-Key": apiKey
+                },
+                timeout: TIMEOUT
+            }
+        );
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                throw new Error("Invalid or missing API key. Please check your API key in the extension settings.");
+            } else if (error.response?.status === 400) {
+                throw new Error("Invalid request format. Please try again.");
+            } else if (error.code === "ECONNREFUSED") {
+                throw new Error("Could not connect to the API server. Please ensure it's running.");
+            }
+        }
+        throw error;
+    }
+}

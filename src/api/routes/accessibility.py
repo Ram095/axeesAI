@@ -1,13 +1,23 @@
 from fastapi import APIRouter, Header, Request
-from typing import Dict, Any, Union
+from typing import Dict, Any, Union, List, Optional
 from src.api.models import AccessibilityQuery, AccessibilityResponse
 from src.api.errors import AuthenticationError, ValidationError, AccessibilityError
 from src.api.utils import log_timing
 from src.agents.accessibility_expert_agent import AccessibilityExpertAgent
 from src.agents.scanner_agent import ScannerAgent
+from src.tools.intent_analyzer import IntentAnalyzer, IntentAnalysisResult
 from src.logging import api_logger
 import time
 from pydantic import BaseModel, HttpUrl
+
+# Add new models for intent analysis
+class IntentContext(BaseModel):
+    scan_results: Optional[List[str]] = None
+    previous_commands: Optional[List[str]] = None
+
+class IntentRequest(BaseModel):
+    query: str
+    context: Optional[IntentContext] = None
 
 # Add new model for scan request
 class ScanRequest(BaseModel):
@@ -348,4 +358,87 @@ async def scan_url(
         raise AccessibilityError(
             status_code=500,
             detail=f"An internal server error occurred: {str(e)}"
+        )
+
+@router.post(
+    "/api/accessibility/analyze-intent",
+    response_model=IntentAnalysisResult,
+    summary="Analyze user intent",
+    description="""
+    Analyze user query to determine their intent (scan, fix, or explain).
+    
+    This endpoint provides:
+    - Intent classification
+    - Confidence score
+    - Extracted metadata (URLs, issue numbers, topics)
+    - Context-aware analysis
+    
+    The API key must be provided in the X-Open-API-Key header.
+    """,
+    responses={
+        200: {
+            "description": "Successfully analyzed user intent",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "command": "scan",
+                        "content": "check https://example.com",
+                        "confidence": 0.95,
+                        "metadata": {
+                            "url": "https://example.com",
+                            "issue_number": None,
+                            "topic": None
+                        }
+                    }
+                }
+            }
+        },
+        400: {"description": "Invalid request format"},
+        401: {"description": "Missing or invalid API key"},
+        500: {"description": "Internal server error"}
+    }
+)
+async def analyze_intent(
+    request: Request,
+    intent_request: IntentRequest,
+    x_open_api_key: str = Header(..., alias="X-Open-API-Key", description="Your OpenAI API key")
+):
+    request_id = getattr(request.state, 'request_id', str(time.time()))
+    
+    if not x_open_api_key:
+        api_logger.error(f"Request {request_id}: Missing API key")
+        raise AuthenticationError()
+        
+    try:
+        api_logger.info(f"Request {request_id}: Analyzing intent for query: {intent_request.query}")
+        
+        with log_timing("intent_analysis"):
+            # Initialize analyzer with API key
+            analyzer = IntentAnalyzer(api_key=x_open_api_key)
+            
+            # Convert context to dict format expected by analyzer
+            context = None
+            if intent_request.context:
+                context = {
+                    'scan_results': intent_request.context.scan_results,
+                    'previous_commands': intent_request.context.previous_commands
+                }
+            
+            # Analyze intent
+            result = await analyzer.analyze_intent(intent_request.query, context)
+            
+            api_logger.info(f"Request {request_id}: Successfully analyzed intent: {result['command']}")
+            return result
+            
+    except ValidationError as ve:
+        api_logger.error(f"Request {request_id}: Validation error: {str(ve)}")
+        raise AccessibilityError(
+            status_code=400,
+            detail=f"Validation error: {str(ve)}"
+        )
+    except Exception as e:
+        api_logger.error(f"Request {request_id}: Error analyzing intent: {str(e)}")
+        raise AccessibilityError(
+            status_code=500,
+            detail=f"Error analyzing intent: {str(e)}"
         )
